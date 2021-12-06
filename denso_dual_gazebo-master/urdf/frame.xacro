@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<robot name="frame" xmlns:xacro="http://ros.org/wiki/xacro">
+
+    <link name="base_link"/>
+
+        <joint name="world_joint" type="fixed">
+            <axis xyz="0 0 0"/>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <parent link="base_link"/>
+            <child link="frame"/>
+        </joint>  
+
+    <link name="frame">
+
+        <visual>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://denso_dual_gazebo/models/frame.dae"/>
+            </geometry>
+        </visual>
+
+        <collision>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <geometry>
+                <mesh filename="package://denso_dual_gazebo/models/frame.dae"/>
+            </geometry>
+        </collision>
+
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="100"/>
+            <inertia ixx="1"  ixy="0"  ixz="0" iyy="1" iyz="0" izz="1"/>
+        </inertial>
+
+    </link>
+
+    <gazebo reference="frame">
+        <selfCollide>false</selfCollide>
+    </gazebo>
+
+</robot>
