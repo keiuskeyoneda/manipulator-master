@@ -22,7 +22,8 @@ typedef struct { double px, py, pz, r11, r12, r13, r21, r22, r23, r31, r32, r33;
 typedef struct { double t[5]; } ik;
 
     int SIZE;   //dataのサイズを保存する関数
-    int c;      //逆運動学と順運動学が一致していない数をカウント
+    int cc;      //逆運動学と順運動学が一致していない数をカウント
+    int CC;
 
 class VS087
 {
@@ -394,12 +395,7 @@ ik inverse_kin(double px, double py, double pz, double r11, double r12, double r
   //  printf("%lf %lf %lf %lf\n", L, s3, c3, c1) ;
 //   printf("%lf %lf\n", pow((-a1 + c1*px + s1*py),2), pow(L,2)) ;
 
-    c23 = cos(t2 + a1 = 30.0;
-    a3 = -445.0;
-    a4 = -20.0;
-    d1 = 197.5;
-    d2 = 197.5;
-    d5 = 430.0;t3);
+    c23 = cos(t2 + t3);
     s23 = sin(t2 + t3);
 
     t5 = acos( (c1*r13+s1*r23)*s23 + r33*c23 );
@@ -410,45 +406,51 @@ ik inverse_kin(double px, double py, double pz, double r11, double r12, double r
 
     if(t1 < -2.96705972839036 || t1 > 2.96705972839036)
     {
-        ROS_ERROR("t1 is out of range!!!");
+      /*  ROS_ERROR("t1 is out of range!!!");
         printf("%f,%f,%f,%f,%f,%f\n",t1,t2,t3,t4,t5,t6);
         printf("%f,%f,%f\n",px,py,pz);
-        ros::shutdown();
+        ros::shutdown();*/
+        CC = 1;
     }
     else if(t2 < -1.74532925199433 || t2 > 2.35619449019234)
     {
-        ROS_ERROR("t2 is out of range!!!");
+      /*  ROS_ERROR("t2 is out of range!!!");
         printf("%f,%f,%f,%f,%f,%f\n",t1,t2,t3,t4,t5,t6);
         printf("%f,%f,%f\n",px,py,pz);
-        ros::shutdown();
+        ros::shutdown();*/
+        CC = 1;
     }
     else if(t3 < -2.37364778271229 || t3 > 2.67035375555132)
     {
-        ROS_ERROR("t3 is out of range!!!");
+      /*  ROS_ERROR("t3 is out of range!!!");
         printf("%f,%f,%f,%f,%f,%f\n",t1,t2,t3,t4,t5,t6);
         printf("%f,%f,%f\n",px,py,pz);
-        ros::shutdown();
+        ros::shutdown();*/
+        CC = 1;
     }
     else if(t4 < -4.71238898038469 || t4 > 4.71238898038469)
     {
-        ROS_ERROR("t4 is out of range!!!");
+      /*  ROS_ERROR("t4 is out of range!!!");
         printf("%f,%f,%f,%f,%f,%f\n",t1,t2,t3,t4,t5,t6);
         printf("%f,%f,%f\n",px,py,pz);
-        ros::shutdown();
+        ros::shutdown();*/
+        CC = 1;
     }
     else if(t5 < -2.0943951023932 || t5 > 2.0943951023932)
     {
-        ROS_ERROR("t5 is out of range!!!");
+      /*  ROS_ERROR("t5 is out of range!!!");
         printf("%f,%f,%f,%f,%f,%f\n",t1,t2,t3,t4,t5,t6);
         printf("%f,%f,%f\n",px,py,pz);
-        ros::shutdown();
+        ros::shutdown();*/
+        CC = 1;
     }
     else if(t6 < -6.28318530717959 || t6 > 6.28318530717959)
     {
-        ROS_ERROR("t6 is out of range!!!");
+      /*  ROS_ERROR("t6 is out of range!!!");
         printf("%f,%f,%f,%f,%f,%f\n",t1,t2,t3,t4,t5,t6);
         printf("%f,%f,%f\n",px,py,pz);
-        ros::shutdown();
+        ros::shutdown();*/
+        CC = 1;
     }
 
 
@@ -464,11 +466,11 @@ ik inverse_kin(double px, double py, double pz, double r11, double r12, double r
     }
 
     else {
-      c++;
-      printf("no match [%d]\n",c);
+      cc++;
+      /*printf("no match [%d]\n",cc);
       std::cout<<P.px-px<<","<<P.py-py<<","<<P.pz-pz<<std::endl;
       printf("////////////////////////////////////\n");
-
+*/
       T.t[0] = t1;
       T.t[1] = t2;
       T.t[2] = t3;
@@ -484,9 +486,12 @@ ik inverse_kin(double px, double py, double pz, double r11, double r12, double r
 }
 
 
-double manipulatability(double a, double b, double c, double d, double e, double f){
+double manipulatability(ik ang[]){    //最小の可操作度を返す
 
 double a1, a3, a4, d1, d2, d5;
+double M1,M2;
+double M_min = 1.4e+31;
+double a, b, c, d, e, f;
 
   a1 = 30.0;
   a3 = -445.0;
@@ -495,10 +500,159 @@ double a1, a3, a4, d1, d2, d5;
   d2 = 197.5;
   d5 = 430.0;
 
+for ( int i = 0; i < SIZE/N; i++) {
 
-double M = 	-sin(a)*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(sin(a)*(cos(c+b)*d5-a4*sin(c+b)-a3*cos(b))*(-sin(c+b)*d5-a4*cos(c+b))*((((cos(a)*cos(d)*sin(e)-sin(a)*cos(c+b)*sin(d)*sin(e))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))-(sin(c+b)*sin(d)*sin(e)*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2)*(-((-cos(c+b)*sin(e)-sin(c+b)*cos(d)*cos(e))*(sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+(sin(a)*sin(d)*cos(e)-cos(a)*(cos(c+b)*cos(d)*cos(e)-sin(c+b)*sin(e)))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))-((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))*((2*(sin(a)*(cos(c+b)*cos(d)*cos(e)-sin(c+b)*sin(e))+cos(a)*sin(d)*cos(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2-(2*(-cos(c+b)*sin(e)-sin(c+b)*cos(d)*cos(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2)/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^3))/(2*(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)^(3/2)))*((cos(a)*(cos(c+b)*(-sin(d)*sin(f)-cos(d)*cos(e)*cos(f))+sin(c+b)*sin(e)*cos(f))-sin(a)*(-cos(d)*sin(f)-sin(d)*cos(e)*cos(f)))/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))-((cos(a)*(cos(c+b)*(-cos(d)*cos(e)*sin(f)-sin(d)*cos(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))*(cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f))))/((cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2)))/(((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)*((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))^2/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+1)*((cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))^2/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2+1))-(((sin(a)*(cos(c+b)*cos(d)*cos(e)-sin(c+b)*sin(e))+cos(a)*sin(d)*cos(e))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))-((-cos(c+b)*sin(e)-sin(c+b)*cos(d)*cos(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2)*(-(sin(c+b)*sin(d)*sin(e)*(sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+(cos(a)*cos(c+b)*sin(d)*sin(e)+sin(a)*cos(d)*sin(e))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))-((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))*((2*(cos(a)*cos(d)*sin(e)-sin(a)*cos(c+b)*sin(d)*sin(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2-(2*sin(c+b)*sin(d)*sin(e)*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2)/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^3))/(2*(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)^(3/2)))*((cos(a)*(cos(c+b)*(-sin(d)*sin(f)-cos(d)*cos(e)*cos(f))+sin(c+b)*sin(e)*cos(f))-sin(a)*(-cos(d)*sin(f)-sin(d)*cos(e)*cos(f)))/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))-((cos(a)*(cos(c+b)*(-cos(d)*cos(e)*sin(f)-sin(d)*cos(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))*(cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f))))/((cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2)))/(((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)*((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))^2/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+1)*((cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))^2/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2+1)))-sin(a)*(cos(c+b)*d5-a4*sin(c+b))*(-sin(c+b)*d5-a4*cos(c+b)+a3*sin(b))*((((cos(a)*cos(d)*sin(e)-sin(a)*cos(c+b)*sin(d)*sin(e))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))-(sin(c+b)*sin(d)*sin(e)*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2)*(-((-cos(c+b)*sin(e)-sin(c+b)*cos(d)*cos(e))*(sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+(sin(a)*sin(d)*cos(e)-cos(a)*(cos(c+b)*cos(d)*cos(e)-sin(c+b)*sin(e)))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))-((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))*((2*(sin(a)*(cos(c+b)*cos(d)*cos(e)-sin(c+b)*sin(e))+cos(a)*sin(d)*cos(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2-(2*(-cos(c+b)*sin(e)-sin(c+b)*cos(d)*cos(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2)/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^3))/(2*(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)^(3/2)))*((cos(a)*(cos(c+b)*(-sin(d)*sin(f)-cos(d)*cos(e)*cos(f))+sin(c+b)*sin(e)*cos(f))-sin(a)*(-cos(d)*sin(f)-sin(d)*cos(e)*cos(f)))/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))-((cos(a)*(cos(c+b)*(-cos(d)*cos(e)*sin(f)-sin(d)*cos(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))*(cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f))))/((cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2)))/(((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)*((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))^2/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+1)*((cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))^2/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2+1))-(((sin(a)*(cos(c+b)*cos(d)*cos(e)-sin(c+b)*sin(e))+cos(a)*sin(d)*cos(e))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))-((-cos(c+b)*sin(e)-sin(c+b)*cos(d)*cos(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2)*(-(sin(c+b)*sin(d)*sin(e)*(sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+(cos(a)*cos(c+b)*sin(d)*sin(e)+sin(a)*cos(d)*sin(e))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))-((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))*((2*(cos(a)*cos(d)*sin(e)-sin(a)*cos(c+b)*sin(d)*sin(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2-(2*sin(c+b)*sin(d)*sin(e)*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2)/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^3))/(2*(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)^(3/2)))*((cos(a)*(cos(c+b)*(-sin(d)*sin(f)-cos(d)*cos(e)*cos(f))+sin(c+b)*sin(e)*cos(f))-sin(a)*(-cos(d)*sin(f)-sin(d)*cos(e)*cos(f)))/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))-((cos(a)*(cos(c+b)*(-cos(d)*cos(e)*sin(f)-sin(d)*cos(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))*(cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f))))/((cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2)))/(((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)*((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))^2/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+1)*((cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))^2/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2+1))))+cos(a)^2*(cos(c+b)*d5-a4*sin(c+b))*(-sin(c+b)*d5-a4*cos(c+b)+a3*sin(b))*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*((((cos(a)*cos(d)*sin(e)-sin(a)*cos(c+b)*sin(d)*sin(e))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))-(sin(c+b)*sin(d)*sin(e)*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2)*(-((-cos(c+b)*sin(e)-sin(c+b)*cos(d)*cos(e))*(sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+(sin(a)*sin(d)*cos(e)-cos(a)*(cos(c+b)*cos(d)*cos(e)-sin(c+b)*sin(e)))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))-((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))*((2*(sin(a)*(cos(c+b)*cos(d)*cos(e)-sin(c+b)*sin(e))+cos(a)*sin(d)*cos(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2-(2*(-cos(c+b)*sin(e)-sin(c+b)*cos(d)*cos(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2)/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^3))/(2*(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)^(3/2)))*((cos(a)*(cos(c+b)*(-sin(d)*sin(f)-cos(d)*cos(e)*cos(f))+sin(c+b)*sin(e)*cos(f))-sin(a)*(-cos(d)*sin(f)-sin(d)*cos(e)*cos(f)))/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))-((cos(a)*(cos(c+b)*(-cos(d)*cos(e)*sin(f)-sin(d)*cos(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))*(cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f))))/((cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2)))/(((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)*((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))^2/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+1)*((cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))^2/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2+1))-(((sin(a)*(cos(c+b)*cos(d)*cos(e)-sin(c+b)*sin(e))+cos(a)*sin(d)*cos(e))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))-((-cos(c+b)*sin(e)-sin(c+b)*cos(d)*cos(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2)*(-(sin(c+b)*sin(d)*sin(e)*(sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+(cos(a)*cos(c+b)*sin(d)*sin(e)+sin(a)*cos(d)*sin(e))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))-((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))*((2*(cos(a)*cos(d)*sin(e)-sin(a)*cos(c+b)*sin(d)*sin(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2-(2*sin(c+b)*sin(d)*sin(e)*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2)/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^3))/(2*(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)^(3/2)))*((cos(a)*(cos(c+b)*(-sin(d)*sin(f)-cos(d)*cos(e)*cos(f))+sin(c+b)*sin(e)*cos(f))-sin(a)*(-cos(d)*sin(f)-sin(d)*cos(e)*cos(f)))/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))-((cos(a)*(cos(c+b)*(-cos(d)*cos(e)*sin(f)-sin(d)*cos(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))*(cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f))))/((cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2)))/(((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)*((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))^2/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+1)*((cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))^2/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2+1)))-cos(a)^2*(cos(c+b)*d5-a4*sin(c+b)-a3*cos(b))*(-sin(c+b)*d5-a4*cos(c+b))*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*((((cos(a)*cos(d)*sin(e)-sin(a)*cos(c+b)*sin(d)*sin(e))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))-(sin(c+b)*sin(d)*sin(e)*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2)*(-((-cos(c+b)*sin(e)-sin(c+b)*cos(d)*cos(e))*(sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+(sin(a)*sin(d)*cos(e)-cos(a)*(cos(c+b)*cos(d)*cos(e)-sin(c+b)*sin(e)))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))-((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))*((2*(sin(a)*(cos(c+b)*cos(d)*cos(e)-sin(c+b)*sin(e))+cos(a)*sin(d)*cos(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2-(2*(-cos(c+b)*sin(e)-sin(c+b)*cos(d)*cos(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2)/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^3))/(2*(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)^(3/2)))*((cos(a)*(cos(c+b)*(-sin(d)*sin(f)-cos(d)*cos(e)*cos(f))+sin(c+b)*sin(e)*cos(f))-sin(a)*(-cos(d)*sin(f)-sin(d)*cos(e)*cos(f)))/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))-((cos(a)*(cos(c+b)*(-cos(d)*cos(e)*sin(f)-sin(d)*cos(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))*(cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f))))/((cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2)))/(((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)*((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))^2/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+1)*((cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))^2/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2+1))-(((sin(a)*(cos(c+b)*cos(d)*cos(e)-sin(c+b)*sin(e))+cos(a)*sin(d)*cos(e))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))-((-cos(c+b)*sin(e)-sin(c+b)*cos(d)*cos(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2)*(-(sin(c+b)*sin(d)*sin(e)*(sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+(cos(a)*cos(c+b)*sin(d)*sin(e)+sin(a)*cos(d)*sin(e))/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*sqrt((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))-((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))*((2*(cos(a)*cos(d)*sin(e)-sin(a)*cos(c+b)*sin(d)*sin(e))*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e)))/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2-(2*sin(c+b)*sin(d)*sin(e)*(sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2)/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^3))/(2*(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)^(3/2)))*((cos(a)*(cos(c+b)*(-sin(d)*sin(f)-cos(d)*cos(e)*cos(f))+sin(c+b)*sin(e)*cos(f))-sin(a)*(-cos(d)*sin(f)-sin(d)*cos(e)*cos(f)))/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))-((cos(a)*(cos(c+b)*(-cos(d)*cos(e)*sin(f)-sin(d)*cos(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))*(cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f))))/((cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2)))/(((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1)*((sin(a)*sin(d)*sin(e)-cos(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e)))^2/((cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2*((sin(a)*(cos(c+b)*cos(d)*sin(e)+sin(c+b)*cos(e))+cos(a)*sin(d)*sin(e))^2/(cos(c+b)*cos(e)-sin(c+b)*cos(d)*sin(e))^2+1))+1)*((cos(a)*(cos(c+b)*(sin(d)*cos(f)-cos(d)*cos(e)*sin(f))+sin(c+b)*sin(e)*sin(f))-sin(a)*(cos(d)*cos(f)-sin(d)*cos(e)*sin(f)))^2/(cos(a)*(cos(c+b)*(cos(d)*cos(e)*cos(f)-sin(d)*sin(f))-sin(c+b)*sin(e)*cos(f))-sin(a)*(cos(d)*sin(f)+sin(d)*cos(e)*cos(f)))^2+1)));
 
-return M;
+  a = ang[i*N].t[0];
+  b = ang[i*N].t[1];
+  c = ang[i*N].t[2];
+  d = ang[i*N].t[3];
+  e = ang[i*N].t[4];
+  f = ang[i*N].t[5];
+
+//ヤコビ行列3×3のときの可操作度
+/*
+M =	abs(-a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)+a4*cos(b)*cos(c+b)));
+*/
+
+/*
+M1 =	abs(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)+a4*cos(b)*cos(c+b))*sin(e)
+*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)
++2.0*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)
+-2.0*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
++pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)
+-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)
++pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)
+-pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)
++pow(sin(a),2)*pow(cos(d),2))
+*abs(sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e))
+/((sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e))
+*sqrt((pow(cos(a),2)*pow(sin(d),2)+2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)+(pow(sin(c+b),2)+pow(sin(a),2)*pow(cos(c+b),2))*pow(cos(d),2))
+*pow(sin(e),2)
++(2.0*cos(a)*sin(a)*sin(c+b)*sin(d)
++(2.0*pow(sin(a),2)-2.0)*cos(c+b)*sin(c+b)*cos(d))*cos(e)*sin(e)
++(pow(sin(a),2)*pow(sin(c+b),2)+pow(cos(c+b),2))
+*pow(cos(e),2))
+*(
+ pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)
+ +pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)
++pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)
++pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)
++pow(sin(a),2)*pow(cos(d),2)
+-2.0*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
++2.0*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)
+-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)
++2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*(pow(sin(f),2)-pow(cos(f),2))
++4.0*cos(a)*sin(a)*cos(c+b)*pow(sin(d),2)*cos(e)*cos(f)*sin(f)
++4.0*pow(cos(a),2)*cos(c+b)*sin(c+b)*sin(d)*sin(e)*cos(f)*sin(f)
+-4.0*pow(cos(a),2)*pow(cos(c+b),2)*cos(d)*sin(d)*cos(e)*cos(f)*sin(f)
+)
+));
+*/
+/*
+ M1 = abs( ((pow(pow(sin(a),2)+pow(cos(a),2),2))*a3*pow(sin(c+b),2)+pow(cos(c+b),2)*pow(sin(d),2)+pow(cos(d),2)*(sin(c+b)*d5+a4*cos(c+b)
+ -a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)+a4*cos(b)*cos(c+b))*sin(e)*pow(sin(e),2)+pow(cos(e),2)
+ *pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)+2.0*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)-2.0*pow(cos(a),2)*cos(c+b)*sin(c+b)
+ *cos(d)*cos(e)*sin(e)+pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)+pow(cos(a),2)
+ *pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)-pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)+pow(sin(a),2)*pow(cos(d),2)
+ *abs(sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e))*(pow(sin(f),2)+pow(cos(f),2)))
+ /((sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e))*(pow(sin(a),2)*pow(sin(d),2)*pow(sin(e),2)+pow(cos(a),2)*pow(sin(d),2)*pow(sin(e),2)
+ +pow(sin(c+b),2)*pow(cos(d),2)*pow(sin(e),2)+pow(sin(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(sin(e),2)+pow(cos(a),2)*pow(cos(c+b),2)
+ *pow(cos(d),2)*pow(sin(e),2)+2.0*pow(sin(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)+2.0*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)
+ *sin(e)-2.0*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)+pow(sin(a),2)*pow(sin(c+b),2)*pow(cos(e),2)+pow(cos(a),2)*pow(sin(c+b),2)
+ *pow(cos(e),2)+pow(cos(c+b),2)*pow(cos(e),2))*sqrt((pow(cos(a),2)*pow(sin(d),2)+2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)+(pow(sin(c+b),2)
+ +pow(sin(a),2)*pow(cos(c+b),2))*pow(cos(d),2))*pow(sin(e),2)+(2.0*cos(a)*sin(a)*sin(c+b)*sin(d)+(2.0*pow(sin(a),2)-2.0)*cos(c+b)*sin(c+b)
+ *cos(d))*cos(e)*sin(e)+(pow(sin(a),2)*pow(sin(c+b),2)+pow(cos(c+b),2))*pow(cos(e),2))*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)
+ *pow(sin(f),2)+2.0*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)*pow(sin(f),2)-2.0*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
+ *pow(sin(f),2)+pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)*pow(sin(f),2)-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(sin(f),2)
+ +pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)*pow(sin(f),2)+pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(sin(f),2)
+ +2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(sin(f),2)+pow(sin(a),2)*pow(cos(d),2)*pow(sin(f),2)+(4.0*pow(cos(a),2))*cos(c+b)*sin(c+b)
+ *sin(d)*sin(e)*cos(f)*sin(f)+4.0*cos(a)*sin(a)*cos(c+b)*pow(sin(d),2)*cos(e)*cos(f)*sin(f)-(4.0*pow(cos(a),2))*pow(cos(c+b),2)*cos(d)
+ *sin(d)*cos(e)*cos(f)*sin(f)+pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)*pow(cos(f),2)+2.0*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)
+ *pow(cos(f),2)-(2.0*pow(cos(a),2))*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)*pow(cos(f),2)+pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)
+ *pow(cos(f),2)-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(cos(f),2)+pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)
+ *pow(cos(e),2)*pow(cos(f),2)+pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(cos(f),2)-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)
+ *pow(cos(f),2)+pow(sin(a),2)*pow(cos(d),2)*pow(cos(f),2))));
+*/
+
+M1 = abs(	(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)
++a4*cos(b)*cos(c+b))*sin(e)*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)
++2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)
+-2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
++pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)
+-2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)
++pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)
+-pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)
++pow(sin(a),2)*pow(cos(d),2))*abs(sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e)))
+/((sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e))
+  *sqrt((pow(cos(a),2)*pow(sin(d),2)+2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)
+  +(pow(sin(c+b),2)+pow(sin(a),2)*pow(cos(c+b),2))*pow(cos(d),2))*pow(sin(e),2)
+  +(2*cos(a)*sin(a)*sin(c+b)*sin(d)+(2*pow(sin(a),2)-2)*cos(c+b)*sin(c+b)*cos(d))*cos(e)*sin(e)
+  +(pow(sin(a),2)*pow(sin(c+b),2)+pow(cos(c+b),2))*pow(cos(e),2))
+*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)*pow(sin(f),2)
++2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)*pow(sin(f),2)
+-2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)*pow(sin(f),2)
++pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)
+-2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(sin(f),2)
++pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)*pow(sin(f),2)
++pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(sin(f),2)
++2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(sin(f),2)
++pow(sin(a),2)*pow(cos(d),2)
++4*pow(cos(a),2)*cos(c+b)*sin(c+b)*sin(d)*sin(e)*cos(f)*sin(f)
++4*cos(a)*sin(a)*cos(c+b)*pow(sin(d),2)*cos(e)*cos(f)*sin(f)
+-4*pow(cos(a),2)*pow(cos(c+b),2)*cos(d)*sin(d)*cos(e)*cos(f)*sin(f)+pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)*pow(cos(f),2)
++2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)*pow(cos(f),2)
+-2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)*pow(cos(f),2)
+-2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(cos(f),2)
++pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)*pow(cos(f),2)
++pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(cos(f),2)
+-2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(f),2)
+)
+));
+
+/*
+M2 = abs(	(pow((pow(sin(a),2)+pow(cos(a),2)),2)*a3*(pow(sin(c+b),2)+pow(cos(c+b),2))*(pow(sin(d),2)+pow(cos(d),2))*(sin(c+b)*d5
++a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)
++a4*cos(b)*cos(c+b))*sin(e)*(pow(sin(e),2)+pow(cos(e),2))*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)
++2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)-2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
++pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)-2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)
++pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)-pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)
++pow(sin(a),2)*pow(cos(d),2))*abs(sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e))*(pow(sin(f),2)+pow(cos(f),2)))
+/((sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e))*(pow(sin(a),2)*pow(sin(d),2)*pow(sin(e),2)+pow(cos(a),2)*pow(sin(d),2)*pow(sin(e),2)
++pow(sin(c+b),2)*pow(cos(d),2)*pow(sin(e),2)+pow(sin(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(sin(e),2)
++pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(sin(e),2)+2*pow(sin(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
++2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)-2*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
++pow(sin(a),2)*pow(sin(c+b),2)*pow(cos(e),2)+pow(cos(a),2)*pow(sin(c+b),2)*pow(cos(e),2)
++pow(cos(c+b),2)*pow(cos(e),2))*sqrt((pow(cos(a),2)*pow(sin(d),2)+2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)
++(pow(sin(c+b),2)+pow(sin(a),2)*pow(cos(c+b),2))*pow(cos(d),2))*pow(sin(e),2)
++(2*cos(a)*sin(a)*sin(c+b)*sin(d)+(2*pow(sin(a),2)-2)*cos(c+b)*sin(c+b)*cos(d))*cos(e)*sin(e)
++(pow(sin(a),2)*pow(sin(c+b),2)+pow(cos(c+b),2))*pow(cos(e),2))*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)*pow(sin(f),2)
++2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)*pow(sin(f),2)
+-2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)*pow(sin(f),2)+pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)*pow(sin(f),2)
+-2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(sin(f),2)
++pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)*pow(sin(f),2)+pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(sin(f),2)
++2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(sin(f),2)+pow(sin(a),2)*pow(cos(d),2)*pow(sin(f),2)
++4*pow(cos(a),2)*cos(c+b)*sin(c+b)*sin(d)*sin(e)*cos(f)*sin(f)+4*cos(a)*sin(a)*cos(c+b)*pow(sin(d),2)*cos(e)*cos(f)*sin(f)
+-4*pow(cos(a),2)*pow(cos(c+b),2)*cos(d)*sin(d)*cos(e)*cos(f)*sin(f)+pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)*pow(cos(f),2)
++2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)*pow(cos(f),2)
+-2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)*pow(cos(f),2)+pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)*pow(cos(f),2)
+-2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(cos(f),2)
++pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)*pow(cos(f),2)
++pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(cos(f),2)
+-2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(f),2)+pow(sin(a),2)*pow(cos(d),2)*pow(cos(f),2))));
+
+if (abs(M1 - M2) > 1.0e-5) {
+  printf("nomatch M\n");
+  std::cout<<abs(M1 - M2)<<","<<M2<<std::endl;
+}
+*/
+
+ if (M1 < M_min) {
+   M_min = M1;
+ }
+}
+
+return M_min;
 
 }
 
@@ -513,15 +667,16 @@ int main(int argc, char** argv)
 
     bool time_out;
 
-    c = 0;
+    cc = 0;
 
  ////////////////////////////////////////////////////////////////////////////////////////////
 
 //csv2vectorの実行
-    std::string filename = "line_test.csv";
+    std::string filename = "line_test.csv";//"line_test.csv";
     std::vector<std::vector<std::string> > data = csv2vector(filename, 2);//第2引数に指定した数だけその行分読み飛ばす
     ik right[data.size()];// data.sizeはvector関数専用
     ik left[data.size()];//rightは右手,leftは左手
+
 
 
 
@@ -531,142 +686,166 @@ int main(int argc, char** argv)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /*マニピュレータの配置決定*/
-
   printf("start\n" );
 
 //マニピュレータの動作範囲設定
 
-double x, y, z;         //マニピュレータの位置
+std::vector<double> x;
+std::vector<double> y;
+std::vector<double> z;        //マニピュレータの位置
 double x_2, y_2, z_2;   //マニピュレータの2軸の位置
 double max_mani_x, max_mani_y, max_mani_z;
 
 //vs087の場合
 //マニピュレータの動作範囲の限界
 
-  max_mani_x = 1751.0;
-  max_mani_y = 1751.0;
-  max_mani_z = 1620.6;
+max_mani_x = 1751.0;
+max_mani_y = 1751.0;
+max_mani_z = 1620.6;
 
-double max_xy=0.0, min_xy=0.0;
 double max_x, min_x, max_y, min_y, max_z, min_z;  //dataの範囲
-double max_zz, min_zz, range_zz;    //あるxy地点でのzの最大値と最小値と範囲
-double range_xy;    //あるzでのxy方向のデータの範囲
 double range_x, range_y, range_z;     //x,y,z方向のデータの範囲
 double range, max_r;
 
-    max_x=min_x=max_y=min_y=max_z=min_z=0.0;
+max_x=max_y=max_z=-10.0e100;
+min_x=min_y=min_z=10.0e100;
 
 //dataのx,y,zそれぞれの範囲を求める
-  for(int i=0; i < SIZE; i++){
+for(int i=0; i < SIZE; i++){
 //x
-    if (stod(data[i][8])>max_x) {   //dataの位置を調整したほうがいいかも
-      max_x = stod(data[i][8]);
-    }
-    else if (stod(data[i][8])<min_x) {
-      min_x = stod(data[i][8]);
-    }
-//y
-    if (stod(data[i][9])>max_y) {
-      max_y = stod(data[i][9]);
-    }
-    else if (stod(data[i][9])<min_y) {
-      min_y = stod(data[i][9]);
-    }
-//z
-    if (stod(data[i][10])>max_z) {
-      max_z = stod(data[i][10]);
-    }
-    else if (stod(data[i][10])<min_z) {
-      min_z = stod(data[i][10]);
-    }
+  if (stod(data[i][8])>max_x) {   //dataの位置を調整したほうがいいかも
+    max_x = stod(data[i][8]);
   }
-
-    range_x = max_x - min_x;
-    range_y = max_y - min_y;
-    range_z = max_z - min_z;
-
-//一つのマニピュレータで足りないならエラーを出力
-    if (range_x > max_mani_x) {
-      printf("need more manipulator[x]\n" );
-    }
-    if (range_y > max_mani_y) {
-      printf("need more manipulator[y]\n" );
-    }
-    if (range_z > max_mani_z) {
-      printf("need more manipulator[z]\n" );
-    }
-
-double X[SIZE], Y[SIZE], Z[SIZE];
-int b = 0, max_b = 0;
-double Z_r[SIZE][SIZE];
-double Z_0=min_z;
-
-double a = 1.0;
-int n = 0;
-int next;
-double near_z;
-double r_max = 0.0;
-double r_min = 10.0e10;
-int check=0;
-int f;
-
-
-//最も離れた２点を見つける
-for ( int i = 0; i < SIZE; i++) {
-  for ( int j = 0; j < SIZE; j++) {
-
-    range = sqrt(pow(stod(data[i][8]) - stod(data[j][8]),2) + pow(stod(data[i][9]) - stod(data[j][9]),2) + pow(stod(data[i][10]) - stod(data[j][10]),2));
-
-    if (range > max_r) {
-      max_r = range;
-//２点のxyの中点にマニピュレータを配置
-      x_2 = (stod(data[i][8]) + stod(data[j][8]))/2.0;
-      y_2 = (stod(data[i][9]) + stod(data[j][9]))/2.0;
-    }
-
+  if (stod(data[i][8])<min_x) {
+    min_x = stod(data[i][8]);
+  }
+//y
+  if (stod(data[i][9])>max_y) {
+    max_y = stod(data[i][9]);
+  }
+  if (stod(data[i][9])<min_y) {
+    min_y = stod(data[i][9]);
+  }
+//z
+  if (stod(data[i][10])>max_z) {
+    max_z = stod(data[i][10]);
+  }
+  if (stod(data[i][10])<min_z) {
+    min_z = stod(data[i][10]);
   }
 }
 
-for (x_2 = min_x; x_2 <= max_x; x_2 += a) {
-  for (y_2 = min_y; y_2 <= max_y; y_2 += a) {
-    for (z_2 = min_z; z_2 <= max_z; z_2 += a) {
+  range_x = max_x - min_x;
+  range_y = max_y - min_y;
+  range_z = max_z - min_z;
 
-      for (int i = 0; i < SIZE; i++) {
+//一つのマニピュレータで足りないならエラーを出力
+  if (range_x > max_mani_x) {
+    printf("need more manipulator[x]\n" );
+  }
+  if (range_y > max_mani_y) {
+    printf("need more manipulator[y]\n" );
+  }
+  if (range_z > max_mani_z) {
+    printf("need more manipulator[z]\n" );
+  }
+
+//double X[100000], Y[100000], Z[100000];
+std::vector<double> X;
+std::vector<double> Y;
+std::vector<double> Z;
+int bb = 0, max_bb;
+
+double a = 10.0;
+
+int check;
+int ff;
+
+//最も離れた２点を見つける
+for ( int i = 0; i < SIZE; i++) {
+for ( int j = 0; j < SIZE; j++) {
+
+  range = sqrt(pow(stod(data[i][8]) - stod(data[j][8]),2) + pow(stod(data[i][9]) - stod(data[j][9]),2) + pow(stod(data[i][10]) - stod(data[j][10]),2));
+
+  if (range > max_r) {
+    max_r = range;
+//２点のxyの中点にマニピュレータを配置
+    x_2 = (stod(data[i][8]) + stod(data[j][8]))/2.0;
+    y_2 = (stod(data[i][9]) + stod(data[j][9]))/2.0;
+  }
+
+}
+}
+
+//ik mani[data.size()];
+
+double x_max = min_x + 875.5;
+double y_max = min_y + 875.5;
+double z_max = min_z + 745.1;
+double x_min = max_x - 875.5;
+double y_min = max_y - 875.5;
+double z_min = max_z - 875.5;
+
+
+//どうにかして範囲を減らせないか
+for (x_2 = x_min; x_2 <= x_max; x_2 += a) {
+  for (y_2 = y_min; y_2 <= y_max; y_2 += a) {
+    for (z_2 = z_min; z_2 <= z_max; z_2 += a) {
+
+      check = 0;
 //マニピュレータの動作範囲と照らし合わせる
+//逆行列に入れて角度から動作範囲と照らし合わせる
 //範囲外のものが１つでもないか確認する
-        if (stod(data[i][10]) > z_2 - 152.0) {     //２軸 ±100°までを動作範囲とする
-          if (sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2)) >= 870.0||sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2)) {
+//ロボットの自己接触も考慮
+//ただし、少し大きめに設定している
+      for (int i = 0; i < SIZE; i+=N) {
 
-            /*if (r_min > sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2))) {
-              r_min = sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2));
-              near_z = z_2;*/
+        if (sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2)) <= 875.0){
+          if(stod(data[i][10])-z_2 >= 0||stod(data[i][10])-z_2 < -400.0){
+            if( sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2)) > 309.3) {
+              CC = 0;
+              inverse_kin(stod(data[i+S][8])-x_2+30.0, stod(data[i+S][9])-y_2, +stod(data[i+S][10])-z_2+395.0,0,0,1,0,1,0,-1,0,0);
+              if (CC == 1) {
+                check = 1;
+              }
+            }
+            else {
               check = 1;
-            /*}
-            else{
-              check = 2;
-            }*/
+            }
+          }
+          else {
+            if( sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2)) > 309.3) {
+              CC = 0;
+
+              inverse_kin(stod(data[i+S][8])-x_2+30.0, stod(data[i+S][9])-y_2, +stod(data[i+S][10])-z_2+395.0,0,0,1,0,1,0,-1,0,0);
+              if (CC == 1) {
+                check = 1;
+              }
+            }
+            else {
+              check = 1;
+            }
           }
         }
-        else {
-          /*if (r_min > sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2))) {
-            r_min = sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2));
-            near_z = z_2;*/
+
+          else {
             check = 1;
-          /*}
-          else{
-            check = 2;
-          }*/
+          }
         }
 
+
+
+        if (check == 0) {
+          X.push_back(x_2);
+          Y.push_back(y_2);
+          Z.push_back(z_2);
+      /*
+      Y[bb] = y_2;
+      Z[bb] = z_2;*/
+        bb++;
+        max_bb = bb;
       }
 
-      if (check == 0) {
-        X[b] = x_2;
-        Y[b] = y_2;
-        Z[b] = z_2;
-        b++;
-        max_b = b;
-      }
     }
   }
 }
@@ -675,32 +854,89 @@ for (x_2 = min_x; x_2 <= max_x; x_2 += a) {
 
 
 //動作範囲に入っている位置が一つでもあるかを判定
-if (b == 0){    //入ってない場合
+if (bb == 0){    //入ってない場合
   printf("need more manipulator\n" );
 }
 
 else{
-  for (b = 0; b <= max_b; b++) {
-    std::cout<<X[b]<<","<<Y[b]<<","<<Z[b]<<std::endl;
+
+//配置可能な場所を出力
+  /*for (bb = 0; bb <= max_bb; bb++) {
+    std::cout<<X[bb]<<","<<Y[bb]<<","<<Z[bb]<<std::endl;
+  }*/
+
+
+//可操作度を導入
+
+  ik mani[data.size()];
+  int dd=0;
+  int max_dd;
+  std::vector<double> min_mani;//可操作度の最小
+
+
+  for (bb = 0; bb <= max_bb; bb++) {
+
+    for(int i = 0; i < SIZE; i+=N){
+      mani[i] = inverse_kin(stod(data[i+S][8])-(X[bb]-30.0), stod(data[i+S][9])-(Y[bb]), +stod(data[i+S][10])-(Z[bb]-395.0),0,0,1,0,1,0,-1,0,0);
+    }
+
+    min_mani.push_back(manipulatability(mani)) ;
+
   }
+
+
+
+  //最小の可操作度が大きい順にソート
+
+  double tmp;
+
+  for (bb = 0; bb <= max_bb; bb++) {
+    for(int i = bb+1; i <= max_bb; i++){
+      if (min_mani[bb] < min_mani[i]) {
+          tmp = min_mani[bb];
+          min_mani[bb] = min_mani[i];
+          min_mani[i] = tmp;
+      }
+    }
+  }
+
+  //上から5個出力する場合
+
+
+/*    x = X - 30.0;
+    y = Y;
+    z = Z - 395.0;*/
+    max_dd = 4;
+
+
+  //ある一定以上の可操作度をもつ場所をすべて出力する場合
+
+/*  for (bb = 0; bb <= max_bb; bb++) {
+      if(min_mani[bb] >= 0.0){
+        x[dd] = X[bb] - 30.0;
+        y[dd] = Y[bb];
+        z[dd] = Z[bb] - 395.0;
+        dd++;
+        max_dd = dd;
+      }
+    }*/
+//可操作度を考慮した上での配置場所の出力
+  for (dd = 0; dd <= max_dd; dd++) {
+    std::cout<<X[dd]-30.0<<","<<Y[dd]<<","<<Z[dd]-395.0<<":"<<min_mani[dd]<<std::endl;
+  }
+
 }
-
-//配置できる点で可操作度が一番大きい点を探す
-
-
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //動作
 
     for(int i = 0; i < SIZE; i+=N){
 
       //right[i] = inverse_kin(stod(data[i][8]) - stod(data[0][2]) +30, stod(data[i][9]) - stod(data[0][3]) - 245, +stod(data[i][10]) - stod(data[0][4]) + 595,0,0,1,0,1,0,-1,0,0);
-      right[i] = inverse_kin(stod(data[i+S][8]), stod(data[i+S][9]) - stod(data[0][3]), +stod(data[i+S][10]),0,0,1,0,1,0,-1,0,0);
+      right[i] = inverse_kin(stod(data[i+S][8])-X[0]+30.0, stod(data[i+S][9])-Y[0], +stod(data[i+S][10])-Z[0]+395.0,0,0,1,0,1,0,-1,0,0);
 
        //std::vector<std::vector<double>> right
       //left[i] = inverse_kin(stod(data[i][17]) - stod(data[0][11]) +30, stod(data[i][18]) - stod(data[0][12]) + 245, +stod(data[i][19]) - stod(data[0][13]) + 595,0,0,1,0,1,0,-1,0,0);
-      left[i] = inverse_kin(stod(data[i+S][17]), stod(data[i+S][18]) - stod(data[0][12]), +stod(data[i+S][19]),0,0,1,0,1,0,-1,0,0);
+    //  left[i] = inverse_kin(stod(data[i+S][17]), stod(data[i+S][18]) - stod(data[0][12]), +stod(data[i+S][19]),0,0,1,0,1,0,-1,0,0);
 
   //     std::cout << stod(data[i+S][8])<< ","<<  stod(data[i+S][9])<< ","<< stod(data[i+S][10])<< std::endl;
     }
@@ -729,7 +965,7 @@ else{
 
     arm.startJointTrajectory(arm.JointTrajectory(init, /*init,*/ 4.0));
 
-     time_out = arm.joint_client_->waitForResult(ros::Duration(10.0));
+     time_out = arm.joint_client_->waitForResult(ros::Duration(20.0));
 
      if (!time_out) {
      ROS_WARN("Phase 1 is time out.");
