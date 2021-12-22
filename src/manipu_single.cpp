@@ -515,7 +515,7 @@ for ( int i = 0; i < SIZE/N; i++) {
 M =	abs(-a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)+a4*cos(b)*cos(c+b)));
 */
 
-/*
+
 M1 =	abs(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)+a4*cos(b)*cos(c+b))*sin(e)
 *(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)
 +2.0*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)
@@ -548,33 +548,9 @@ M1 =	abs(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*co
 -4.0*pow(cos(a),2)*pow(cos(c+b),2)*cos(d)*sin(d)*cos(e)*cos(f)*sin(f)
 )
 ));
-*/
-/*
- M1 = abs( ((pow(pow(sin(a),2)+pow(cos(a),2),2))*a3*pow(sin(c+b),2)+pow(cos(c+b),2)*pow(sin(d),2)+pow(cos(d),2)*(sin(c+b)*d5+a4*cos(c+b)
- -a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)+a4*cos(b)*cos(c+b))*sin(e)*pow(sin(e),2)+pow(cos(e),2)
- *pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)+2.0*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)-2.0*pow(cos(a),2)*cos(c+b)*sin(c+b)
- *cos(d)*cos(e)*sin(e)+pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)+pow(cos(a),2)
- *pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)-pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)+pow(sin(a),2)*pow(cos(d),2)
- *abs(sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e))*(pow(sin(f),2)+pow(cos(f),2)))
- /((sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e))*(pow(sin(a),2)*pow(sin(d),2)*pow(sin(e),2)+pow(cos(a),2)*pow(sin(d),2)*pow(sin(e),2)
- +pow(sin(c+b),2)*pow(cos(d),2)*pow(sin(e),2)+pow(sin(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(sin(e),2)+pow(cos(a),2)*pow(cos(c+b),2)
- *pow(cos(d),2)*pow(sin(e),2)+2.0*pow(sin(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)+2.0*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)
- *sin(e)-2.0*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)+pow(sin(a),2)*pow(sin(c+b),2)*pow(cos(e),2)+pow(cos(a),2)*pow(sin(c+b),2)
- *pow(cos(e),2)+pow(cos(c+b),2)*pow(cos(e),2))*sqrt((pow(cos(a),2)*pow(sin(d),2)+2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)+(pow(sin(c+b),2)
- +pow(sin(a),2)*pow(cos(c+b),2))*pow(cos(d),2))*pow(sin(e),2)+(2.0*cos(a)*sin(a)*sin(c+b)*sin(d)+(2.0*pow(sin(a),2)-2.0)*cos(c+b)*sin(c+b)
- *cos(d))*cos(e)*sin(e)+(pow(sin(a),2)*pow(sin(c+b),2)+pow(cos(c+b),2))*pow(cos(e),2))*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)
- *pow(sin(f),2)+2.0*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)*pow(sin(f),2)-2.0*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
- *pow(sin(f),2)+pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)*pow(sin(f),2)-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(sin(f),2)
- +pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)*pow(sin(f),2)+pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(sin(f),2)
- +2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(sin(f),2)+pow(sin(a),2)*pow(cos(d),2)*pow(sin(f),2)+(4.0*pow(cos(a),2))*cos(c+b)*sin(c+b)
- *sin(d)*sin(e)*cos(f)*sin(f)+4.0*cos(a)*sin(a)*cos(c+b)*pow(sin(d),2)*cos(e)*cos(f)*sin(f)-(4.0*pow(cos(a),2))*pow(cos(c+b),2)*cos(d)
- *sin(d)*cos(e)*cos(f)*sin(f)+pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)*pow(cos(f),2)+2.0*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)
- *pow(cos(f),2)-(2.0*pow(cos(a),2))*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)*pow(cos(f),2)+pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)
- *pow(cos(f),2)-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(cos(f),2)+pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)
- *pow(cos(e),2)*pow(cos(f),2)+pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(cos(f),2)-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)
- *pow(cos(f),2)+pow(sin(a),2)*pow(cos(d),2)*pow(cos(f),2))));
-*/
 
+
+/*
 M1 = abs(	(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)
 +a4*cos(b)*cos(c+b))*sin(e)*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)
 +2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)
@@ -609,7 +585,7 @@ M1 = abs(	(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*
 -2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(f),2)
 )
 ));
-
+*/
 /*
 M2 = abs(	(pow((pow(sin(a),2)+pow(cos(a),2)),2)*a3*(pow(sin(c+b),2)+pow(cos(c+b),2))*(pow(sin(d),2)+pow(cos(d),2))*(sin(c+b)*d5
 +a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)
@@ -800,39 +776,43 @@ for (x_2 = x_min; x_2 <= x_max; x_2 += a) {
 //ただし、少し大きめに設定している
       for (int i = 0; i < SIZE; i+=N) {
 
-        if (sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2)) <= 875.0){
-          if(stod(data[i][10])-z_2 >= 0||stod(data[i][10])-z_2 < -400.0){
-            if( sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2)) > 309.3) {
-              CC = 0;
-              inverse_kin(stod(data[i+S][8])-x_2+30.0, stod(data[i+S][9])-y_2, +stod(data[i+S][10])-z_2+395.0,0,0,1,0,1,0,-1,0,0);
-              if (CC == 1) {
+        if (check == 1) {
+          continue;
+        }
+        else{
+          if (sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2)) <= 875.0){
+            if(stod(data[i][10])-z_2 >= 0||stod(data[i][10])-z_2 < -400.0){
+              if( sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2)) > 309.3) {
+                CC = 0;
+                inverse_kin(stod(data[i+S][8])-x_2+30.0, stod(data[i+S][9])-y_2, +stod(data[i+S][10])-z_2+395.0,0,0,1,0,1,0,-1,0,0);
+                if (CC == 1) {
+                  check = 1;
+                }
+              }
+              else {
                 check = 1;
               }
             }
             else {
-              check = 1;
-            }
-          }
-          else {
-            if( sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2)) > 309.3) {
-              CC = 0;
+              if( sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2)) > 309.3) {
+                CC = 0;
 
-              inverse_kin(stod(data[i+S][8])-x_2+30.0, stod(data[i+S][9])-y_2, +stod(data[i+S][10])-z_2+395.0,0,0,1,0,1,0,-1,0,0);
-              if (CC == 1) {
+                inverse_kin(stod(data[i+S][8])-x_2+30.0, stod(data[i+S][9])-y_2, +stod(data[i+S][10])-z_2+395.0,0,0,1,0,1,0,-1,0,0);
+                if (CC == 1) {
+                  check = 1;
+                }
+              }
+              else {
                 check = 1;
               }
             }
+          }
+
             else {
               check = 1;
             }
           }
         }
-
-          else {
-            check = 1;
-          }
-        }
-
 
 
         if (check == 0) {

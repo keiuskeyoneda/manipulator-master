@@ -885,13 +885,30 @@ else{
     for(int i = 0; i < SIZE; i+=N){
       mani[i] = inverse_kin(stod(data[i+S][8])-(X[bb]-30.0), stod(data[i+S][9])-(Y[bb]), +stod(data[i+S][10])-(Z[bb]-395.0),0,0,1,0,1,0,-1,0,0);
     /*  if (i>0) {
-        if (abs(mani[i].t[0]-mani[i-1].t[0])>M_PI||abs(mani[i].t[1]-mani[i-1].t[1])>M_PI||abs(mani[i].t[2]-mani[i-1].t[2])>M_PI
-          ||abs(mani[i].t[3]-mani[i-1].t[3])>M_PI||abs(mani[i].t[4]-mani[i-1].t[4])>M_PI||abs(mani[i].t[5]-mani[i-1].t[5])>M_PI) {
-            dd = 1;
+        if (mani[i].t[0]-mani[i-1].t[0]>M_PI) {
+          mani[i].t[0] -= 2*M_PI;
+        }
+        else if (mani[i].t[0]-mani[i-1].t[0]>-M_PI) {
+          mani[i].t[0] += 2*M_PI;
+        }
+        if (abs(mani[i].t[1]-mani[i-1].t[1])>M_PI) {
+          mani[i].t[1] -= 2*M_PI;
+        }
+        if (abs(mani[i].t[2]-mani[i-1].t[2])>M_PI) {
+          mani[i].t[2] -= 2*M_PI;
+        }
+        if (abs(mani[i].t[3]-mani[i-1].t[3])>M_PI) {
+          mani[i].t[3] -= 2*M_PI;
+        }
+        if (abs(mani[i].t[4]-mani[i-1].t[4])>M_PI) {
+          mani[i].t[4] -= 2*M_PI;
+        }
+        if (abs(mani[i].t[5]-mani[i-1].t[5])>M_PI) {
+          mani[i].t[5] -= 2*M_PI;
         }
       }*/
     }
-    /*if (dd == 1) {
+  /*  if (dd == 1) {
       min_mani.push_back(0.0);
       continue;
     }*/
@@ -927,6 +944,33 @@ for(int i = 0; i < SIZE; i+=N){
 
       //right[i] = inverse_kin(stod(data[i][8]) - stod(data[0][2]) +30, stod(data[i][9]) - stod(data[0][3]) - 245, +stod(data[i][10]) - stod(data[0][4]) + 595,0,0,1,0,1,0,-1,0,0);
       right[i] = inverse_kin(stod(data[i+S][8])-X[bb_max]+30.0, stod(data[i+S][9])-Y[bb_max], +stod(data[i+S][10])-Z[bb_max]+395.0,0,0,1,0,1,0,-1,0,0);
+
+//マニピュレータがグルンとたまに動くのを直そうとしたがうまく行かない
+  if (i>0) {
+
+      if (right[i].t[0]-right[i-N].t[0]>M_PI) {
+        right[i].t[0] -= 2*M_PI;
+      }
+      else if (right[i].t[0]-right[i-N].t[0]>-M_PI) {
+        right[i].t[0] += 2*M_PI;
+      }
+      if (abs(right[i].t[1]-right[i-N].t[1])>M_PI) {
+        right[i].t[1] -= 2*M_PI;
+      }
+      if (abs(right[i].t[2]-right[i-N].t[2])>M_PI) {
+        right[i].t[2] -= 2*M_PI;
+      }
+      if (abs(right[i].t[3]-right[i-N].t[3])>M_PI) {
+        right[i].t[3] -= 2*M_PI;
+      }
+      if (abs(right[i].t[4]-right[i-N].t[4])>M_PI) {
+        right[i].t[4] -= 2*M_PI;
+      }
+      if (abs(right[i].t[5]-right[i-N].t[5])>M_PI) {
+        right[i].t[5] -= 2*M_PI;
+      }
+
+    }
 
        //std::vector<std::vector<double>> right
       //left[i] = inverse_kin(stod(data[i][17]) - stod(data[0][11]) +30, stod(data[i][18]) - stod(data[0][12]) + 245, +stod(data[i][19]) - stod(data[0][13]) + 595,0,0,1,0,1,0,-1,0,0);
