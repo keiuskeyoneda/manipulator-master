@@ -9,6 +9,7 @@
 #include <control_msgs/FollowJointTrajectoryAction.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <bits/stdc++.h>
+#include <algorithm>
 
 #define N 1
 #define S 0
@@ -489,9 +490,12 @@ ik inverse_kin(double px, double py, double pz, double r11, double r12, double r
 double manipulatability(ik ang[]){    //最小の可操作度を返す
 
 double a1, a3, a4, d1, d2, d5;
-double M1,M2;
-double M_min = 1.4e+31;
+std::vector <double> M1;
+double M;
+//double M2;
+//double M_min[10] = {1.9e+31, 1.8e+31, 1.7e+31, 1.6e+31, 1.5e+31, 1.4e+31, 1.3e+31, 1.2e+31, 1.1e+31, 1.0e+31};
 double a, b, c, d, e, f;
+double tmp;
 
   a1 = 30.0;
   a3 = -445.0;
@@ -575,7 +579,7 @@ M1 =	abs(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*co
  *pow(cos(f),2)+pow(sin(a),2)*pow(cos(d),2)*pow(cos(f),2))));
 */
 
-M1 = abs(	(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)
+M1.push_back( abs(	(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)
 +a4*cos(b)*cos(c+b))*sin(e)*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)
 +2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)
 -2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
@@ -608,8 +612,9 @@ M1 = abs(	(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*
 +pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(cos(f),2)
 -2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(f),2)
 )
-));
-
+))
+);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
 M2 = abs(	(pow((pow(sin(a),2)+pow(cos(a),2)),2)*a3*(pow(sin(c+b),2)+pow(cos(c+b),2))*(pow(sin(d),2)+pow(cos(d),2))*(sin(c+b)*d5
 +a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)
@@ -647,12 +652,42 @@ if (abs(M1 - M2) > 1.0e-5) {
 }
 */
 
- if (M1 < M_min) {
-   M_min = M1;
- }
+ /*if (M1 < M_min[9]) {
+   M_min[9] = M1;
+   for (int i = 0; i < 10; i++) {
+     for (int j = i+1; j < 10; j++) {
+
+       if (M_min[j]<M_min[i]) {
+         tmp = M_min[j];
+         M_min[j] = M_min[i];
+         M_min[i] = tmp;
+       }
+     }
+   }
+ }*/
+}
+/*auto less_=[](double one, double two){return one < two;};
+std::sort(M1.begin(), M1.end(), less_);*/
+//std::sort(M1.begin(), M1.end(), less<double>());
+
+
+
+for (int i = 0; i < M1.size(); i++) {
+  for (int j = i+1; j < M1.size(); j++) {
+
+    if (M1[i] > M1[j]) {
+      tmp = M1[i];
+      M1[i] = M1[j];
+      M1[j] = tmp;
+    }
+  }
 }
 
-return M_min;
+
+M = M1[0];
+
+return M//+M1[1]+M1[2]+M1[3]+M1[4]
+/*+M_min[1]+M_min[2]+M_min[3]+M_min[4]+M_min[5]+M_min[6]+M_min[7]+M_min[8]+M_min[9]*/;
 
 }
 
@@ -672,7 +707,8 @@ int main(int argc, char** argv)
  ////////////////////////////////////////////////////////////////////////////////////////////
 
 //csv2vectorの実行
-    std::string filename = "line_test.csv";//"line_test.csv";
+    //std::string filename = "capture543.csv";
+    std::string filename = "line_test.csv";
     std::vector<std::vector<std::string> > data = csv2vector(filename, 2);//第2引数に指定した数だけその行分読み飛ばす
     ik right[data.size()];// data.sizeはvector関数専用
     ik left[data.size()];//rightは右手,leftは左手
@@ -800,39 +836,43 @@ for (x_2 = x_min; x_2 <= x_max; x_2 += a) {
 //ただし、少し大きめに設定している
       for (int i = 0; i < SIZE; i+=N) {
 
-        if (sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2)) <= 875.0){
-          if(stod(data[i][10])-z_2 >= 0||stod(data[i][10])-z_2 < -400.0){
-            if( sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2)) > 309.3) {
-              CC = 0;
-              inverse_kin(stod(data[i+S][8])-x_2+30.0, stod(data[i+S][9])-y_2, +stod(data[i+S][10])-z_2+395.0,0,0,1,0,1,0,-1,0,0);
-              if (CC == 1) {
-                check = 1;
-              }
-            }
-            else {
-              check = 1;
-            }
-          }
-          else {
-            if( sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2)) > 309.3) {
-              CC = 0;
-
-              inverse_kin(stod(data[i+S][8])-x_2+30.0, stod(data[i+S][9])-y_2, +stod(data[i+S][10])-z_2+395.0,0,0,1,0,1,0,-1,0,0);
-              if (CC == 1) {
-                check = 1;
-              }
-            }
-            else {
-              check = 1;
-            }
-          }
+        if (check == 1) {
+          continue;
         }
+        else{
+          if (sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2)) <= 875.0){
+            if(stod(data[i][10])-z_2 <= 0||stod(data[i][10])-z_2 > 400.0){
+              if( sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2) + pow(stod(data[i][10]) - z_2,2)) > 309.3) {
+                CC = 0;
+                inverse_kin(stod(data[i+S][8])-x_2+30.0, -stod(data[i+S][9])+y_2, -stod(data[i+S][10])+z_2-395.0,0,0,1,0,1,0,-1,0,0);
+                if (CC == 1) {
+                  check = 1;
+                }
+              }
+              else {
+                check = 1;
+              }
+            }
+            else {
+              if( sqrt(pow(stod(data[i][8]) - x_2,2) + pow(stod(data[i][9]) - y_2,2)) > 309.3) {
+                CC = 0;
+
+                inverse_kin(stod(data[i+S][8])-x_2+30.0, -stod(data[i+S][9])+y_2, -stod(data[i+S][10])+z_2-395.0,0,0,1,0,1,0,-1,0,0);
+                if (CC == 1) {
+                  check = 1;
+                }
+              }
+              else {
+                check = 1;
+              }
+            }
+          }
 
           else {
             check = 1;
           }
         }
-
+      }
 
 
         if (check == 0) {
@@ -878,7 +918,7 @@ else{
 
 //可操作度の計算
 //最小を(5個位)記憶してそれよりも小さい点があったらそこで中断するようにする
-  for (bb = 0; bb <= max_bb; bb++) {
+  for (bb = 0; bb < max_bb; bb++) {
 
     dd = 0;
 
@@ -896,7 +936,7 @@ else{
       continue;
     }*/
     min_mani.push_back(manipulatability(mani));
-  //  min_mani = manipulatability(mani);
+    //std::cout<<manipulatability(mani)<<std::endl;
   }
 
   int bb_max;
@@ -912,12 +952,41 @@ else{
 
 //可操作度を考慮した上での配置場所の出力
 
+//std::sort(min_mani.begin(), min_mani.end());
+/*
+for (int i = 0; i < min_mani.size(); i++) {
+  std::cout<<min_mani[i]<<std::endl;
+}*/
+
+
 for(int i = 0; i < SIZE; i+=N){
   mani[i] = inverse_kin(stod(data[i+S][8])-(X[bb_max]-30.0), stod(data[i+S][9])-(Y[bb_max]), +stod(data[i+S][10])-(Z[bb_max]-395.0),0,0,1,0,1,0,-1,0,0);
 }
 
     std::cout<<X[bb_max]-30.0<<","<<Y[bb_max]<<","<<Z[bb_max]-395.0<<":"<<min_mani[bb_max]<<":"<<manipulatability(mani)<<std::endl;
 
+/*auto greater_=[](int one, int two){return one > two;};
+    std::sort(min_mani.begin(), min_mani.end(), greater_);*/
+  //  std::sort(min_mani.begin(), min_mani.end(), std::greater<int>());
+
+double tmp;
+
+    for (int i = 0; i < min_mani.size(); i++) {
+      for (int j = i+1; j < min_mani.size(); j++) {
+
+        if (min_mani[i] < min_mani[j]) {
+          tmp = min_mani[i];
+          min_mani[i] = min_mani[j];
+          min_mani[j] = tmp;
+        }
+      }
+    }
+
+
+
+    for (int i = 0; i < 10; i++) {
+      std::cout<<min_mani[i]<<std::endl;
+    }
 
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
