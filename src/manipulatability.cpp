@@ -10,6 +10,7 @@
 #include <trajectory_msgs/JointTrajectory.h>
 #include <bits/stdc++.h>
 #include <algorithm>
+#include <limits>
 
 #define N 1
 #define S 0
@@ -492,6 +493,7 @@ double manipulatability(ik ang[]){    //最小の可操作度を返す
 double a1, a3, a4, d1, d2, d5;
 std::vector <double> M1;
 double M;
+double M_;
 //double M2;
 //double M_min[10] = {1.9e+31, 1.8e+31, 1.7e+31, 1.6e+31, 1.5e+31, 1.4e+31, 1.3e+31, 1.2e+31, 1.1e+31, 1.0e+31};
 double a, b, c, d, e, f;
@@ -554,7 +556,7 @@ M1 =	abs(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*co
 ));
 */
 /*
- M1 = abs( ((pow(pow(sin(a),2)+pow(cos(a),2),2))*a3*pow(sin(c+b),2)+pow(cos(c+b),2)*pow(sin(d),2)+pow(cos(d),2)*(sin(c+b)*d5+a4*cos(c+b)
+M1.push_back( abs( ((pow(pow(sin(a),2)+pow(cos(a),2),2))*a3*pow(sin(c+b),2)+pow(cos(c+b),2)*pow(sin(d),2)+pow(cos(d),2)*(sin(c+b)*d5+a4*cos(c+b)
  -a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)+a4*cos(b)*cos(c+b))*sin(e)*pow(sin(e),2)+pow(cos(e),2)
  *pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)+2.0*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)-2.0*pow(cos(a),2)*cos(c+b)*sin(c+b)
  *cos(d)*cos(e)*sin(e)+pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)+pow(cos(a),2)
@@ -576,10 +578,12 @@ M1 =	abs(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*co
  *pow(cos(f),2)-(2.0*pow(cos(a),2))*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)*pow(cos(f),2)+pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)
  *pow(cos(f),2)-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(cos(f),2)+pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)
  *pow(cos(e),2)*pow(cos(f),2)+pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(cos(f),2)-2.0*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)
- *pow(cos(f),2)+pow(sin(a),2)*pow(cos(d),2)*pow(cos(f),2))));
+ *pow(cos(f),2)+pow(sin(a),2)*pow(cos(d),2)*pow(cos(f),2)))));
 */
 
-M1.push_back( abs(	(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)
+//もともと
+
+M_ = abs(	(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)
 +a4*cos(b)*cos(c+b))*sin(e)*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)
 +2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)
 -2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
@@ -612,11 +616,19 @@ M1.push_back( abs(	(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d
 +pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(cos(f),2)
 -2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(f),2)
 )
-))
-);
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+));
 /*
-M2 = abs(	(pow((pow(sin(a),2)+pow(cos(a),2)),2)*a3*(pow(sin(c+b),2)+pow(cos(c+b),2))*(pow(sin(d),2)+pow(cos(d),2))*(sin(c+b)*d5
+if(std::isnan(M_)){
+  M_ = -1.0;
+  return M_;
+}
+*/
+M1.push_back(M_);
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//2
+/*
+M1.push_back( abs(	(pow((pow(sin(a),2)+pow(cos(a),2)),2)*a3*(pow(sin(c+b),2)+pow(cos(c+b),2))*(pow(sin(d),2)+pow(cos(d),2))*(sin(c+b)*d5
 +a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)
 +a4*cos(b)*cos(c+b))*sin(e)*(pow(sin(e),2)+pow(cos(e),2))*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)
 +2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)-2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
@@ -628,10 +640,12 @@ M2 = abs(	(pow((pow(sin(a),2)+pow(cos(a),2)),2)*a3*(pow(sin(c+b),2)+pow(cos(c+b)
 +pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(sin(e),2)+2*pow(sin(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
 +2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)-2*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)
 +pow(sin(a),2)*pow(sin(c+b),2)*pow(cos(e),2)+pow(cos(a),2)*pow(sin(c+b),2)*pow(cos(e),2)
-+pow(cos(c+b),2)*pow(cos(e),2))*sqrt((pow(cos(a),2)*pow(sin(d),2)+2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)
++pow(cos(c+b),2)*pow(cos(e),2))
+*sqrt((pow(cos(a),2)*pow(sin(d),2)+2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)
 +(pow(sin(c+b),2)+pow(sin(a),2)*pow(cos(c+b),2))*pow(cos(d),2))*pow(sin(e),2)
 +(2*cos(a)*sin(a)*sin(c+b)*sin(d)+(2*pow(sin(a),2)-2)*cos(c+b)*sin(c+b)*cos(d))*cos(e)*sin(e)
-+(pow(sin(a),2)*pow(sin(c+b),2)+pow(cos(c+b),2))*pow(cos(e),2))*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)*pow(sin(f),2)
++(pow(sin(a),2)*pow(sin(c+b),2)+pow(cos(c+b),2))*pow(cos(e),2))
+*(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)*pow(sin(f),2)
 +2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)*pow(sin(f),2)
 -2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)*pow(sin(f),2)+pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)*pow(sin(f),2)
 -2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(sin(f),2)
@@ -644,8 +658,9 @@ M2 = abs(	(pow((pow(sin(a),2)+pow(cos(a),2)),2)*a3*(pow(sin(c+b),2)+pow(cos(c+b)
 -2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(cos(f),2)
 +pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)*pow(cos(f),2)
 +pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(cos(f),2)
--2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(f),2)+pow(sin(a),2)*pow(cos(d),2)*pow(cos(f),2))));
-
+-2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(f),2)+pow(sin(a),2)*pow(cos(d),2)*pow(cos(f),2)))));
+*/
+/*
 if (abs(M1 - M2) > 1.0e-5) {
   printf("nomatch M\n");
   std::cout<<abs(M1 - M2)<<","<<M2<<std::endl;
@@ -685,6 +700,50 @@ for (int i = 0; i < M1.size(); i++) {
 
 
 M = M1[0];
+/*
+if (std::isnan(M)) {
+  printf("M == nan\n" );
+  std::cout<<(pow(cos(a),2)*pow(sin(d),2)+2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)
+  +(pow(sin(c+b),2)+pow(sin(a),2)*pow(cos(c+b),2))*pow(cos(d),2))*pow(sin(e),2)
+  +(2*cos(a)*sin(a)*sin(c+b)*sin(d)+(2*pow(sin(a),2)-2)*cos(c+b)*sin(c+b)*cos(d))*cos(e)*sin(e)
+  +(pow(sin(a),2)*pow(sin(c+b),2)+pow(cos(c+b),2))*pow(cos(e),2)<<std::endl;
+}
+*/
+/*
+  if (std::isinf(M)) {
+    printf("inf\n" );
+    std::cout<<((sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e))
+      *sqrt((pow(cos(a),2)*pow(sin(d),2)+2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)
+      +(pow(sin(c+b),2)+pow(sin(a),2)*pow(cos(c+b),2))*pow(cos(d),2))*pow(sin(e),2)
+      +(2*cos(a)*sin(a)*sin(c+b)*sin(d)+(2*pow(sin(a),2)-2)*cos(c+b)*sin(c+b)*cos(d))*cos(e)*sin(e)
+      +(pow(sin(a),2)*pow(sin(c+b),2)+pow(cos(c+b),2))*pow(cos(e),2))
+    *(pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)*pow(sin(f),2)
+    +2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)*pow(sin(f),2)
+    -2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)*pow(sin(f),2)
+    +pow(sin(a),2)*pow(sin(d),2)*pow(cos(e),2)
+    -2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(sin(f),2)
+    +pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)*pow(sin(f),2)
+    +pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(sin(f),2)
+    +2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(sin(f),2)
+    +pow(sin(a),2)*pow(cos(d),2)
+    +4*pow(cos(a),2)*cos(c+b)*sin(c+b)*sin(d)*sin(e)*cos(f)*sin(f)
+    +4*cos(a)*sin(a)*cos(c+b)*pow(sin(d),2)*cos(e)*cos(f)*sin(f)
+    -4*pow(cos(a),2)*pow(cos(c+b),2)*cos(d)*sin(d)*cos(e)*cos(f)*sin(f)+pow(cos(a),2)*pow(sin(c+b),2)*pow(sin(e),2)*pow(cos(f),2)
+    +2*cos(a)*sin(a)*sin(c+b)*sin(d)*cos(e)*sin(e)*pow(cos(f),2)
+    -2*pow(cos(a),2)*cos(c+b)*sin(c+b)*cos(d)*cos(e)*sin(e)*pow(cos(f),2)
+    -2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)*pow(cos(f),2)
+    +pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)*pow(cos(f),2)
+    +pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)*pow(cos(f),2)
+    -2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(f),2)
+    )
+  )<<std::endl;
+  }
+  */
+
+  if(std::isnan(M)){
+    M = -1.0;
+    return M;
+  }
 
 return M//+M1[1]+M1[2]+M1[3]+M1[4]
 /*+M_min[1]+M_min[2]+M_min[3]+M_min[4]+M_min[5]+M_min[6]+M_min[7]+M_min[8]+M_min[9]*/;
