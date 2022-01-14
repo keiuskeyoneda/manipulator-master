@@ -420,6 +420,7 @@ ik inverse_kin(double px, double py, double pz, double r11, double r12, double r
 
 
     P = forward_kin(t1, t2, t3, t4, t5, t6);
+      for (int i = 0; i < SIZE/N; i++) {
 
     if(abs(P.px-px)<1.0e-11 && abs(P.py-py)<1.0e-11 && abs(P.pz-pz)<1.0e-11/* && P.r11==r11 && P.r12==r12 && P.r13==r13 && P.r21==r21 && P.r22==r22 && P.r23==r23 && P.r31==r31 && P.r32==r32 && P.r33==r33*/){
       T.t[0] = t1;
@@ -444,13 +445,13 @@ ik inverse_kin(double px, double py, double pz, double r11, double r12, double r
       T.t[5] = t6;
 
     }
-
+  }
   //  printf("%f,%f,%f,%f,%f,%f\n",t1,t2,t3,t4,t5,t6);
     return T;
 }
 
 
-double manipulatability(ik ang_1[]/*, ik ang_2[], double min*/){    //最小の可操作度を返す
+double manipulatability(ik ang_1[], double min){    //最小の可操作度を返す
 
   double a1, a3, a4, d1, d2, d5;
   double M1,M2;
@@ -468,18 +469,12 @@ double manipulatability(ik ang_1[]/*, ik ang_2[], double min*/){    //最小の�
   d2 = 197.5;
   d5 = 430.0;
 
-  for ( int i = 0; i < SIZE; i+=N) {
+  for ( int i = 0; i < SIZE/N; i++) {
 
-    /*if (g == 1) {
+    if (g >= 1) {
       continue;
     }
-    else {*/
-    /*  a_1 = ang_1[i].t[0];
-      b_1 = ang_1[i].t[1];
-      c_1 = ang_1[i].t[2];
-      d_1 = ang_1[i].t[3];
-      e_1 = ang_1[i].t[4];
-      f_1 = ang_1[i].t[5];*/
+    else {
 
       a = ang_1[i].t[0];
       b = ang_1[i].t[1];
@@ -487,14 +482,7 @@ double manipulatability(ik ang_1[]/*, ik ang_2[], double min*/){    //最小の�
       d = ang_1[i].t[3];
       e = ang_1[i].t[4];
       f = ang_1[i].t[5];
-/*
-      a_2 = ang_2[i*N].t[0];
-      b_2 = ang_2[i*N].t[1];
-      c_2 = ang_2[i*N].t[2];
-      d_2 = ang_2[i*N].t[3];
-      e_2 = ang_2[i*N].t[4];
-      f_2 = ang_2[i*N].t[5];
-*/
+
 //ヤコビ行列3×3のときの可操作度
 /*
 M =	abs(-a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)+a4*cos(b)*cos(c+b)));
@@ -536,8 +524,6 @@ M1 = abs(	(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*
 -2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(f),2)
 )
 ));
-
-
 
 /*
 M1 =	abs(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*cos(c+b)*d5+a4*sin(b)*sin(c+b)+a4*cos(b)*cos(c+b))*sin(e)
@@ -667,43 +653,30 @@ M2 = abs(	(a3*(sin(c_2+b_2)*d5+a4*cos(c_2+b_2)-a3*sin(b_2)+a1)*(cos(b_2)*sin(c_2
 -2*cos(a)*sin(a)*cos(c+b)*cos(d)*sin(d)*pow(cos(e),2)
 +pow(cos(a),2)*pow(cos(c+b),2)*pow(cos(d),2)*pow(cos(e),2)
 -pow(cos(a),2)*pow(cos(c+b),2)*pow(sin(d),2)
-+pow(sin(a),2)*pow(cos(d),2))*abs(sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e))*/
-;
++pow(sin(a),2)*pow(cos(d),2))*abs(sin(c+b)*cos(d)*sin(e)-cos(c+b)*cos(e));*/
+
 
 //std::cout<<"c="<<b<<std::endl;
 
   if(std::isnan(M1)){
     //std::cout<<M1<<std::endl;
     M1 = -1.0;
+    g++;
 
-    if (std::isnan(M2)) {
-      g++;
-    }
-  //  return M1;
   }
 
-  /* if (i == 0) {
-      M_min = M1;
-    }
-  */
+  if (M1 < min) {
+    g++;
+  }
+
     M.push_back(M1);
 
-/*
-    if (M1 < M_min) {
-      M_min = M1;
     }
-*/
-/*    if (M2 < M_min) {
-      M_min = M2;
-    }
-*/
-    }
-//  }
+  }
 std::sort(M.begin(), M.end());
-//std::cout<<g<<std::endl;
 
-return std::accumulate(M.begin(), M.end(),0.0);
-//  return M[0]+M[1]+M[2]+M[3]+M[4]+M[5]+M[6];
+//return std::accumulate(M.begin(), M.end(),0.0);
+  return M[0]/*+M[1]+M[2]+M[3]+M[4]+M[5]+M[6]*/;
 }
 
 
@@ -727,18 +700,18 @@ int main(int argc, char** argv)
     ik left[data.size()];//rightは右手,leftは左手
 
         SIZE = data.size() - S - E;
-        std::cout << SIZE << std::endl;
+        std::cout << "datasize:"<<SIZE << std::endl;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 /*マニピュレータの配置決定*/
   printf("start\n" );
 
 //check
-
+/*
 int checker=0;
 
 for (int i = 0; i < SIZE/N; i++) {
-inverse_kin(stod(data[i+S][8]) - stod(data[0][2]) -57, -stod(data[i+S][9]) + stod(data[0][3]) - 350/*+ 245*/, -stod(data[i+S][10]) + 1400 + 750,0,0,1,0,1,0,-1,0,0);
+inverse_kin(stod(data[i+S][8]) - stod(data[0][2]) -57, -stod(data[i+S][9]) + stod(data[0][3]) - 350/*+ 245*//*, -stod(data[i+S][10]) + 1400 + 750,0,0,1,0,1,0,-1,0,0);
 if (CC == 1) {
   checker++;
 }
@@ -750,7 +723,7 @@ if (checker >= 1) {
 else{
   printf("ok\n");
 }
-
+*/
 //マニピュレータの動作範囲設定
 
 std::vector<double> x;
@@ -777,50 +750,50 @@ max_x_2=max_y_2=max_z_2=-10.0e100;
 min_x_2=min_y_2=min_z_2=10.0e100;
 
 //dataのx,y,zそれぞれの範囲を求める
-for(int i=0; i < SIZE; i++){
+for(int i=0; i < SIZE/N; i++){
 //1
   //x
-  if (stod(data[i][8])>max_x_1) {
-    max_x_1 = stod(data[i][8]);
+  if (stod(data[i*N][8])>max_x_1) {
+    max_x_1 = stod(data[i*N][8]);
   }
-  if (stod(data[i][8])<min_x_1) {
-    min_x_1 = stod(data[i][8]);
+  if (stod(data[i*N][8])<min_x_1) {
+    min_x_1 = stod(data[i*N][8]);
   }
   //y
-  if (stod(data[i][9])>max_y_1) {
-    max_y_1 = stod(data[i][9]);
+  if (stod(data[i*N][9])>max_y_1) {
+    max_y_1 = stod(data[i*N][9]);
   }
-  if (stod(data[i][9])<min_y_1) {
-    min_y_1 = stod(data[i][9]);
+  if (stod(data[i*N][9])<min_y_1) {
+    min_y_1 = stod(data[i*N][9]);
   }
   //z
-  if (stod(data[i][10])>max_z_1) {
-    max_z_1 = stod(data[i][10]);
+  if (stod(data[i*N][10])>max_z_1) {
+    max_z_1 = stod(data[i*N][10]);
   }
-  if (stod(data[i][10])<min_z_1) {
-    min_z_1 = stod(data[i][10]);
+  if (stod(data[i*N][10])<min_z_1) {
+    min_z_1 = stod(data[i*N][10]);
   }
 //2
   //x
-  if (stod(data[i][17])>max_x_2) {
-    max_x_2 = stod(data[i][17]);
+  if (stod(data[i*N][17])>max_x_2) {
+    max_x_2 = stod(data[i*N][17]);
   }
-  if (stod(data[i][17])<min_x_2) {
-    min_x_2 = stod(data[i][17]);
+  if (stod(data[i*N][17])<min_x_2) {
+    min_x_2 = stod(data[i*N][17]);
   }
   //y
-  if (stod(data[i][18])>max_y_2) {
-    max_y_2 = stod(data[i][18]);
+  if (stod(data[i*N][18])>max_y_2) {
+    max_y_2 = stod(data[i*N][18]);
   }
-  if (stod(data[i][18])<min_y_2) {
-    min_y_2 = stod(data[i][18]);
+  if (stod(data[i*N][18])<min_y_2) {
+    min_y_2 = stod(data[i*N][18]);
   }
   //z
-  if (stod(data[i][19])>max_z_2) {
-    max_z_2 = stod(data[i][19]);
+  if (stod(data[i*N][19])>max_z_2) {
+    max_z_2 = stod(data[i*N][19]);
   }
-  if (stod(data[i][19])<min_z_2) {
-    min_z_2 = stod(data[i][19]);
+  if (stod(data[i*N][19])<min_z_2) {
+    min_z_2 = stod(data[i*N][19]);
   }
 }
 
@@ -858,12 +831,12 @@ std::vector<std::vector<double> > Y(2);
 std::vector<std::vector<double> > Z(2);
 int bb_1 = 0, bb_2 = 0, max_bb_1, max_bb_2;
 
-double a = 10.0;
+double a = 100.0;
 
 double check_x[2], check_y[2], check_z[2];
 int check_min[2]={1000,1000};
 int check;
-int ff;
+
 
 double x_max_1 = max_x_1 + 875.5;
 double y_max_1 = max_y_1 + 875.5;
@@ -881,6 +854,93 @@ double z_min_2 = min_z_2 - 875.5;
 
 ik inv;
 
+//マニピュレータの配置位置の座標を切りのいい数字にしたい
+
+std::cout<<x_min_1-30.0<<"~"<<x_max_1-30.0<<":"<<y_min_1<<"~"<<y_max_1<<":"<<z_min_1+195.0<<"~"<<z_max_1+195.0<<std::endl;
+std::cout<<x_min_2-30.0<<"~"<<x_max_2-30.0<<":"<<y_min_2<<"~"<<y_max_2<<":"<<z_min_2+195.0<<"~"<<z_max_2+195.0<<std::endl;
+
+//ちゃんと繰り上げするコードを作ったほうがいい
+if (x_min_1 > 0) {
+  if (fmod(x_min_1,a)== 0) {
+    x_min_1 = (int) ((x_min_1-30.0)/a)*a+30.0;
+  }
+  else{
+  x_min_1 = (int) ((x_min_1-30.0)/a+1.0)*a+30.0;
+  }
+}
+else{
+  x_min_1 = (int) ((x_min_1-30.0)/a)*a+30.0;
+}
+if (y_min_1 > 0) {
+  if (fmod(y_min_1,a)== 0) {
+    y_min_1 = (int) (y_min_1/a)*a;
+  }
+  else{
+  y_min_1 = (int) (y_min_1/a+1.0)*a;
+  }
+}
+else{
+  y_min_1 = (int) (y_min_1/a)*(a);
+}
+if (z_min_1 > 0) {
+  if (fmod(z_min_1,a)== 0) {
+    z_min_1 = (int) ((z_min_1+395.0)/a)*a-395.0;
+  }
+  else{
+  z_min_1 = (int) ((z_min_1+395.0)/a+1.0)*a-395.0;
+  }
+}
+else{
+  z_min_1 = (int) ((z_min_1+395.0)/a)*a-395.0;
+}
+
+
+if (x_min_2 > 0) {
+  if (fmod(x_min_2,a)== 0) {
+    x_min_2 = (int) ((x_min_2-30.0)/a)*a+30.0;
+  }
+  else{
+  x_min_2 = (int) ((x_min_2-30.0)/a+1.0)*a+30.0;
+  }
+}
+else{
+  x_min_2 = (int) ((x_min_2-30.0)/a)*a+30.0;
+}
+if (y_min_2 > 0) {
+  if (fmod(y_min_2,a)== 0) {
+    y_min_2 = (int) (y_min_2/a)*a;
+  }
+  else{
+  y_min_2 = (int) (y_min_2/a+1.0)*a;
+  }
+}
+else{
+  y_min_2 = (int) (y_min_2/a)*(a);
+}
+if (z_min_2 > 0) {
+  if (fmod(z_min_2,a)== 0) {
+    z_min_2 = (int) ((z_min_2+395.0)/a)*a-395.0;
+  }
+  else{
+  z_min_2 = (int) ((z_min_2+395.0)/a+1.0)*a-395.0;
+  }
+}
+else{
+  z_min_2 = (int) ((z_min_2+395.0)/a)*a-395.0;
+}
+
+/*if (z_min_1 <= 1000.0 - 195.0) {
+  z_min_1 = 1000.0 - 195.0;
+}
+if (z_min_2 <= 1000.0 - 195.0) {
+  z_min_2 = 1000.0 - 195.0;
+}
+
+z_max_1 = 2100.0 - 195.0;
+z_max_2 = 2100.0 - 195.0;*/
+
+std::cout<<x_min_1<<","<<y_min_1<<","<<z_min_1<<","<<x_min_2<<","<<y_min_2<<","<<z_min_2<<std::endl;
+
 //どうにかして範囲を減らせないか
 for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
   for (y_2_1 = y_min_1; y_2_1 <= y_max_1; y_2_1 += a) {
@@ -891,18 +951,18 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
 //逆行列に入れて角度から動作範囲と照らし合わせる
 //範囲外のものが１つでもないか確認する
 //ロボットの自己接触も考慮
-//ただし、少し大きめに設定している
       for (int i = 0; i < SIZE/N; i++) {
 
-        if (check >= 1) {
+        if (check <= 1) {
           continue;
         }
         else{
+
           if (sqrt(pow(stod(data[i*N][8]) - x_2_1,2) + pow(stod(data[i*N][9]) - y_2_1,2) + pow(stod(data[i*N][10]) - z_2_1,2)) <= 875.5){
-            if(stod(data[i*N][10])-z_2_1 <= 224.5/*0*//*||stod(data[i*N][10])-z_2_1 > 400.0*/){
+            if(stod(data[i*N][10])-z_2_1 <= 224.5){
               if( sqrt(pow(stod(data[i*N][8]) - x_2_1,2) + pow(stod(data[i*N][9]) - y_2_1,2) + pow(stod(data[i*N][10]) - z_2_1,2)) > 224.5/*309.3*/) {
                 CC = 0;
-                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1-395.0,0,0,1,0,1,0,-1,0,0);
+                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1-395.0,-1/2,0,sqrt(3)/2,0,1,0,-sqrt(3)/2,0,-1/2);
                 if (CC == 1) {
                   check++;
                 }
@@ -911,10 +971,10 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
                 check++;
               }
             }
-            else if(stod(data[i*N][10])-z_2_1 > 400.0){
-              if( sqrt(pow(stod(data[i*N][8]) - x_2_1,2) + pow(stod(data[i*N][9]) - y_2_1,2) + pow(stod(data[i*N][10]) - z_2_1,2)) > 100.0/*224.5,309.3*/) {
+            else if(stod(data[i*N][10])-z_2_1 < 400.0){
+              if( sqrt(pow(stod(data[i*N][8]) - x_2_1,2) + pow(stod(data[i*N][9]) - y_2_1,2)) > 100.0/*224.5,309.3*/) {
                 CC = 0;
-                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1-395.0,0,0,1,0,1,0,-1,0,0);
+                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1-395.0,-1/2,0,sqrt(3)/2,0,1,0,-sqrt(3)/2,0,-1/2);
                 if (CC == 1) {
                   check++;
                 }
@@ -924,14 +984,13 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
               }
             }
             else {
-              if( sqrt(pow(stod(data[i*N][8]) - x_2_1,2) + pow(stod(data[i*N][9]) - y_2_1,2)) > 224.5/*309.3*/) {
                 CC = 0;
 
-                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1-395.0,0,0,1,0,1,0,-1,0,0);
+                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1-395.0,-1/2,0,sqrt(3)/2,0,1,0,-sqrt(3)/2,0,-1/2);
                 if (CC == 1) {
                   check++;
                 }
-              }
+
               else {
                 check++;
               }
@@ -951,7 +1010,6 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
           Z[0].push_back(z_2_1);
         bb_1++;
         max_bb_1 = bb_1;
-        std::cout<<inv.t[0]<<","<<inv.t[1]<<","<<inv.t[2]<<","<<inv.t[3]<<","<<inv.t[4]<<","<<inv.t[5]<<std::endl;
       }
 
       if (check < check_min[0]) {
@@ -960,16 +1018,18 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
         check_z[0] = z_2_1;
         check_min[0] = check;
       }
-    //  std::cout<<check<<std::endl;
 
     }
   }
 }
 
+std::cout<<"[1]"/*<<check_x[0]<<","<<check_y[0]<<","<<check_z[0]<<","*/<<check_min[0]<<std::endl;
+
 
 for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
   for (y_2_2 = y_min_2; y_2_2 <= y_max_2; y_2_2 += a) {
     for (z_2_2 = z_min_2; z_2_2 <= z_max_2; z_2_2 += a) {
+
 
       check = 0;
 //マニピュレータの動作範囲と照らし合わせる
@@ -983,11 +1043,23 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
           continue;
         }
         else{
-          if (sqrt(pow(stod(data[i][8]) - x_2_2,2) + pow(stod(data[i][9]) - y_2_2,2) + pow(stod(data[i][10]) - z_2_2,2)) <= 875.0){
-            if(stod(data[i][10])-z_2_2 <= 0||stod(data[i][10])-z_2_2 > 400.0){
+          if (sqrt(pow(stod(data[i][8]) - x_2_2,2) + pow(stod(data[i][9]) - y_2_2,2) + pow(stod(data[i][10]) - z_2_2,2)) < 875.5){
+            if(stod(data[i][10])-z_2_2 <= 224.5){
               if( sqrt(pow(stod(data[i][8]) - x_2_2,2) + pow(stod(data[i][9]) - y_2_2,2) + pow(stod(data[i][10]) - z_2_2,2)) > 309.3) {
                 CC = 0;
-                inverse_kin(stod(data[i+S][8])-x_2_2+30.0, -stod(data[i+S][9])+y_2_2, -stod(data[i+S][10])+z_2_2-395.0,0,0,1,0,1,0,-1,0,0);
+                inverse_kin(stod(data[i+S][8])-x_2_2+30.0, -stod(data[i+S][9])+y_2_2, -stod(data[i+S][10])+z_2_2-395.0,-1/2,0,sqrt(3)/2,0,1,0,-sqrt(3)/2,0,-1/2);
+                if (CC == 1) {
+                  check++;
+                }
+              }
+              else {
+                check++;
+              }
+            }
+            else if (stod(data[i][10])-z_2_2 <= 400.0) {
+              if( sqrt(pow(stod(data[i][8]) - x_2_2,2) + pow(stod(data[i][9]) - y_2_2,2)) > 100.0) {
+                CC = 0;
+                inverse_kin(stod(data[i+S][8])-x_2_2+30.0, -stod(data[i+S][9])+y_2_2, -stod(data[i+S][10])+z_2_2-395.0,-1/2,0,sqrt(3)/2,0,1,0,-sqrt(3)/2,0,-1/2);
                 if (CC == 1) {
                   check++;
                 }
@@ -997,17 +1069,10 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
               }
             }
             else {
-              if( sqrt(pow(stod(data[i][8]) - x_2_2,2) + pow(stod(data[i][9]) - y_2_2,2)) > 309.3) {
-                CC = 0;
-
-                inverse_kin(stod(data[i+S][8])-x_2_2+30.0, -stod(data[i+S][9])+y_2_2, -stod(data[i+S][10])+z_2_2-395.0,0,0,1,0,1,0,-1,0,0);
+                inverse_kin(stod(data[i+S][8])-x_2_2+30.0, -stod(data[i+S][9])+y_2_2, -stod(data[i+S][10])+z_2_2-395.0,-1/2,0,sqrt(3)/2,0,1,0,-sqrt(3)/2,0,-1/2);
                 if (CC == 1) {
                   check++;
                 }
-              }
-              else {
-                check++;
-              }
             }
           }
 
@@ -1041,15 +1106,17 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
 
 //std::cout<<X[0][0]<<std::endl;
 
-printf("aa\n" );
-
-std::cout<<check_x[0]<<","<<check_y[0]<<","<<check_z[0]<<","<<check_min[0]<<",,"<<check_x[1]<<","<<check_y[1]<<","<<check_z[1]<<","<<check_min[1]<<std::endl;
+std::cout<<"[2]"/*<<check_x[1]<<","<<check_y[1]<<","<<check_z[1]<<","*/<<check_min[1]<<std::endl;
 
 int bb_max_1[8];
 int bb_max_2[8];
 int bb_max11,bb_max12,bb_max13,bb_max14,bb_max15;
 int bb_max21,bb_max22,bb_max23,bb_max24,bb_max25;
-int bb_max18,bb_max28;
+int bb_max16,bb_max26,bb_max17,bb_max27,bb_max18,bb_max28;
+double pos_x[2][8], pos_y[2][8], pos_z[2][8];
+double pair_max;
+int ff;
+int i_max, j_max;
 
 //動作範囲に入っている位置が一つでもあるかを判定
 if (bb_1 == 0 || bb_2 == 0){    //入ってない場合
@@ -1077,16 +1144,16 @@ else{
   std::cout<<max_bb_1<<","<<max_bb_2<<std::endl;
   std::vector<std::vector<double> > min_mani(2);
   //double min_mani[max_bb_1][max_bb_2];//可操作度の最小
-  printf("b\n" );
+  printf("Now loading...\n" );
 
 //可操作度の計算
 //最小を(5個位)記憶してそれよりも小さい点があったらそこで中断するようにする
   for (bb_1 = 0; bb_1 < max_bb_1; bb_1++) {
       for(int i = 0; i < SIZE; i+=N){
-        mani_1[i]
-          =inverse_kin(stod(data[i+S][8])-(X[0][bb_1]-30.0),-stod(data[i+S][9])+(Y[0][bb_1]),-stod(data[i+S][10])+(Z[0][bb_1]-395.0),0.0,0.0,1.0,0.0,1.0,0.0,-1.0,0.0,0.0);
+        mani_1[i/N]
+          =inverse_kin(stod(data[i+S][8])-(X[0][bb_1]-30.0),-stod(data[i+S][9])+(Y[0][bb_1]),-stod(data[i+S][10])+(Z[0][bb_1]-395.0),-1/2,0,sqrt(3)/2,0,1,0,-sqrt(3)/2,0,-1/2);
       }
-      min_mani[0].push_back(manipulatability(mani_1/*, min_mani_max[0][7]*/));
+      min_mani[0].push_back(manipulatability(mani_1, min_mani_max[0][7]));
       //std::cout<<manipulatability(mani_1)<<std::endl;sort
       if (min_mani[0][bb_1]>min_mani_max[0][7]) {
         min_mani_max[0][7] = min_mani[0][bb_1];
@@ -1107,11 +1174,23 @@ else{
       }
   }
 
+  bb_max11 = bb_max_1[0];
+  bb_max12 = bb_max_1[1];
+  bb_max13 = bb_max_1[2];
+  bb_max14 = bb_max_1[3];
+  bb_max15 = bb_max_1[4];
+  bb_max16 = bb_max_1[5];
+  bb_max17 = bb_max_1[6];
+  bb_max18 = bb_max_1[7];
+/*
+  std::cout<<"[11]"<<X[0][bb_max11]-30.0<<","<<Y[0][bb_max11]<<","<<Z[0][bb_max11]-395.0<<":"<<min_mani[0][bb_max11]<<std::endl;
+  std::cout<<"[12]"<<X[0][bb_max12]-30.0<<","<<Y[0][bb_max12]<<","<<Z[0][bb_max12]-395.0<<":"<<min_mani[0][bb_max12]<<std::endl;
+*/
     for (bb_2 = 0; bb_2 < max_bb_2; bb_2++) {
       for(int i = 0; i < SIZE; i+=N){
-        mani_2[i/N] = inverse_kin(stod(data[i+S][17])-(X[1][bb_2]-30.0), -stod(data[i+S][18])+(Y[1][bb_2]), -stod(data[i+S][19])+(Z[1][bb_2]-395.0),0.0,0.0,1.0,0.0,1.0,0.0,-1.0,0.0,0.0);
+        mani_2[i/N] = inverse_kin(stod(data[i+S][17])-(X[1][bb_2]-30.0), -stod(data[i+S][18])+(Y[1][bb_2]), -stod(data[i+S][19])+(Z[1][bb_2]-395.0),-1/2,0,sqrt(3)/2,0,1,0,-sqrt(3)/2,0,-1/2);
       }
-      min_mani[1].push_back(manipulatability(mani_2/*, min_mani_max[1][7]*/));
+      min_mani[1].push_back(manipulatability(mani_2, min_mani_max[1][7]));
 
      if (min_mani[1][bb_2]>min_mani_max[1][7]) {
         min_mani_max[1][7] = min_mani[1][bb_2];
@@ -1132,8 +1211,6 @@ else{
       }
     }
 
-printf("aaa\n" );
-
 //std::cout<<min_mani[0][0]<<std::endl;
 
 //std::sort(min_mani[0].rbegin(), min_mani[0].rend());
@@ -1143,51 +1220,208 @@ printf("aaa\n" );
   /*for(int i = 0; i < SIZE; i+=N){
     mani[i] = inverse_kin(stod(data[i+S][8])-(X[bb_max]-30.0), stod(data[i+S][9])-(Y[bb_max]), +stod(data[i+S][10])-(Z[bb_max]-395.0),0,0,1,0,1,0,-1,0,0);
   }*/
-  bb_max11 = bb_max_1[0];
   bb_max21 = bb_max_2[0];
-  bb_max12 = bb_max_1[1];
   bb_max22 = bb_max_2[1];
-  bb_max13 = bb_max_1[2];
   bb_max23 = bb_max_2[2];
-  bb_max14 = bb_max_1[3];
   bb_max24 = bb_max_2[3];
-  bb_max15 = bb_max_1[4];
   bb_max25 = bb_max_2[4];
-  bb_max18 = bb_max_1[7];
+  bb_max26 = bb_max_2[5];
+  bb_max27 = bb_max_2[6];
   bb_max28 = bb_max_2[7];
 
-/*    std::cout<<X[0][bb_max11]-30.0<<","<<Y[0][bb_max11]<<","<<Z[0][bb_max11]-395.0<<","<<
-    X[1][bb_max21]-30.0<<","<<Y[1][bb_max21]<<","<<Z[1][bb_max21]-395.0<<":"<<min_mani[0][bb_max11]<<":"<<min_mani[1][bb_max21]<<std::endl;
 
-    std::cout<<X[0][bb_max12]-30.0<<","<<Y[0][bb_max12]<<","<<Z[0][bb_max12]-395.0<<","<<
-    X[1][bb_max22]-30.0<<","<<Y[1][bb_max22]<<","<<Z[1][bb_max22]-395.0<<":"<<min_mani[0][bb_max12]<<":"<<min_mani[1][bb_max22]<<std::endl;
+//可操作度が全てマイナスになる場合
 
-    std::cout<<X[0][bb_max13]-30.0<<","<<Y[0][bb_max13]<<","<<Z[0][bb_max13]-395.0<<","<<
-    X[1][bb_max23]-30.0<<","<<Y[1][bb_max23]<<","<<Z[1][bb_max23]-395.0<<":"<<min_mani[0][bb_max13]<<":"<<min_mani[1][bb_max23]<<std::endl;
+  if (min_mani_max[0][0]<0 || min_mani_max[1][0]<0 ) {
+    printf("restart manipulatability\n" );
 
-    std::cout<<X[0][bb_max14]-30.0<<","<<Y[0][bb_max14]<<","<<Z[0][bb_max14]-395.0<<","<<
-    X[1][bb_max24]-30.0<<","<<Y[1][bb_max24]<<","<<Z[1][bb_max24]-395.0<<":"<<min_mani[0][bb_max14]<<":"<<min_mani[1][bb_max24]<<std::endl;
+    //min_mani_max[2][8] = {-1.5e100,-1.4e100,-1.3e100,-1.2e100,-1.1e100,-1.0e100,-0.9e100,-0.8e100, -1.5e100,-1.4e100,-1.3e100,-1.2e100,-1.1e100,-1.0e100,-0.9e100,-0.8e100};
+    min_mani[0].clear();
+    min_mani[1].clear();
 
-    std::cout<<X[0][bb_max15]-30.0<<","<<Y[0][bb_max15]<<","<<Z[0][bb_max15]-395.0<<","<<
-    X[1][bb_max25]-30.0<<","<<Y[1][bb_max25]<<","<<Z[1][bb_max25]-395.0<<":"<<min_mani[0][bb_max15]<<":"<<min_mani[1][bb_max25]<<std::endl;
+    for (bb_1 = 0; bb_1 < max_bb_1; bb_1++) {
+        for(int i = 0; i < SIZE; i+=N){
+          mani_1[i/N]
+            =inverse_kin(stod(data[i+S][8])-(X[0][bb_1]-30.0),-stod(data[i+S][9])+(Y[0][bb_1]),-stod(data[i+S][10])+(Z[0][bb_1]-395.0),-1/2,0,sqrt(3)/2,0,1,0,-sqrt(3)/2,0,-1/2);
+        }
+        min_mani[0].push_back(manipulatability(mani_1, min_mani_max[0][7]));
+        //std::cout<<manipulatability(mani_1)<<std::endl;sort
+        if (min_mani[0][bb_1]>min_mani_max[0][7]) {
+          min_mani_max[0][7] = min_mani[0][bb_1];
+          bb_max_1[7] = bb_1;
+          for (int i = 0; i < 8; i++) {
+            for (int j = i+1; j < 8; j++) {
 
-    std::cout<<X[0][bb_max18]-30.0<<","<<Y[0][bb_max18]<<","<<Z[0][bb_max18]-395.0<<","<<
-    X[1][bb_max28]-30.0<<","<<Y[1][bb_max28]<<","<<Z[1][bb_max28]-395.0<<":"<<min_mani[0][bb_max18]<<":"<<min_mani[1][bb_max28]<<std::endl;*/
+              if (min_mani_max[0][i] < min_mani_max[0][j]) {
+                tmp = min_mani_max[0][i];
+                min_mani_max[0][i] = min_mani_max[0][j];
+                min_mani_max[0][j] = tmp;
+                tmp_bb = bb_max_1[i];
+                bb_max_1[i] = bb_max_1[j];
+                bb_max_1[j] = tmp_bb;
+              }
+            }
+          }
+        }
+    }
 
-    std::cout<<min_mani[0].size()<<std::endl;
+    bb_max11 = bb_max_1[0];
+    bb_max12 = bb_max_1[1];
+    bb_max13 = bb_max_1[2];
+    bb_max14 = bb_max_1[3];
+    bb_max15 = bb_max_1[4];
+    bb_max16 = bb_max_1[5];
+    bb_max17 = bb_max_1[6];
+    bb_max18 = bb_max_1[7];
 
-   for (int i = 0; i < 8/*min_mani[0].size()*/; i++) {
-      std::cout<<min_mani[0][i]<<std::endl;
-}
+      for (bb_2 = 0; bb_2 < max_bb_2; bb_2++) {
+        for(int i = 0; i < SIZE; i+=N){
+          mani_2[i/N] = inverse_kin(stod(data[i+S][17])-(X[1][bb_2]-30.0), -stod(data[i+S][18])+(Y[1][bb_2]), -stod(data[i+S][19])+(Z[1][bb_2]-395.0),-1/2,0,sqrt(3)/2,0,1,0,-sqrt(3)/2,0,-1/2);
+        }
+        min_mani[1].push_back(manipulatability(mani_2, min_mani_max[1][7]));
+
+       if (min_mani[1][bb_2]>min_mani_max[1][7]) {
+          min_mani_max[1][7] = min_mani[1][bb_2];
+          bb_max_2[7] = bb_2;
+          for (int i = 0; i < 8; i++) {
+            for (int j = i+1; j < 8; j++) {
+
+              if (min_mani_max[1][i] < min_mani_max[1][j]) {
+                tmp = min_mani_max[1][i];
+                min_mani_max[1][i] = min_mani_max[1][j];
+                min_mani_max[1][j] = tmp;
+                tmp_bb = bb_max_2[i];
+                bb_max_2[i] = bb_max_2[j];
+                bb_max_2[j] = tmp_bb;
+              }
+            }
+          }
+        }
+      }
+
+  }
+
+  bb_max21 = bb_max_2[0];
+  bb_max22 = bb_max_2[1];
+  bb_max23 = bb_max_2[2];
+  bb_max24 = bb_max_2[3];
+  bb_max25 = bb_max_2[4];
+  bb_max26 = bb_max_2[5];
+  bb_max27 = bb_max_2[6];
+  bb_max28 = bb_max_2[7];
+
+  pos_x[0][0] = X[0][bb_max11]-30.0;
+  pos_y[0][0] = Y[0][bb_max11];
+  pos_z[0][0] = Z[0][bb_max11]+395.0 - 200.0;
+  pos_x[0][1] = X[0][bb_max12]-30.0;
+  pos_y[0][1] = Y[0][bb_max12];
+  pos_z[0][1] = Z[0][bb_max12]+395.0 - 200.0;
+  pos_x[0][2] = X[0][bb_max13]-30.0;
+  pos_y[0][2] = Y[0][bb_max13];
+  pos_z[0][2] = Z[0][bb_max13]+395.0 - 200.0;
+  pos_x[0][3] = X[0][bb_max14]-30.0;
+  pos_y[0][3] = Y[0][bb_max14];
+  pos_z[0][3] = Z[0][bb_max14]+395.0 - 200.0;
+  pos_x[0][4] = X[0][bb_max15]-30.0;
+  pos_y[0][4] = Y[0][bb_max15];
+  pos_z[0][4] = Z[0][bb_max15]+395.0 - 200.0;
+  pos_x[0][5] = X[0][bb_max16]-30.0;
+  pos_y[0][5] = Y[0][bb_max16];
+  pos_z[0][5] = Z[0][bb_max16]+395.0 - 200.0;
+  pos_x[0][6] = X[0][bb_max17]-30.0;
+  pos_y[0][6] = Y[0][bb_max17];
+  pos_z[0][6] = Z[0][bb_max17]+395.0 - 200.0;
+  pos_x[0][7] = X[0][bb_max18]-30.0;
+  pos_y[0][7] = Y[0][bb_max18];
+  pos_z[0][7] = Z[0][bb_max18]+395.0 - 200.0;
+
+  pos_x[1][0] = X[1][bb_max21]-30.0;
+  pos_y[1][0] = Y[1][bb_max21];
+  pos_z[1][0] = Z[1][bb_max21]+395.0 - 200.0;
+  pos_x[1][1] = X[1][bb_max22]-30.0;
+  pos_y[1][1] = Y[1][bb_max22];
+  pos_z[1][1] = Z[1][bb_max22]+395.0 - 200.0;
+  pos_x[1][2] = X[1][bb_max23]-30.0;
+  pos_y[1][2] = Y[1][bb_max23];
+  pos_z[1][2] = Z[1][bb_max23]+395.0 - 200.0;
+  pos_x[1][3] = X[1][bb_max24]-30.0;
+  pos_y[1][3] = Y[1][bb_max24];
+  pos_z[1][3] = Z[1][bb_max24]+395.0 - 200.0;
+  pos_x[1][4] = X[1][bb_max25]-30.0;
+  pos_y[1][4] = Y[1][bb_max25];
+  pos_z[1][4] = Z[1][bb_max25]+395.0 - 200.0;
+  pos_x[1][5] = X[1][bb_max26]-30.0;
+  pos_y[1][5] = Y[1][bb_max26];
+  pos_z[1][5] = Z[1][bb_max26]+395.0 - 200.0;
+  pos_x[1][6] = X[1][bb_max27]-30.0;
+  pos_y[1][6] = Y[1][bb_max27];
+  pos_z[1][6] = Z[1][bb_max27]+395.0 - 200.0;
+  pos_x[1][7] = X[1][bb_max28]-30.0;
+  pos_y[1][7] = Y[1][bb_max28];
+  pos_z[1][7] = Z[1][bb_max28]+395.0 - 200.0;
+
+/*
+    std::cout<<"[21]"<<X[1][bb_max21]-30.0<<","<<Y[1][bb_max21]<<","<<Z[1][bb_max21]-395.0<<":"<<min_mani[1][bb_max21]<<std::endl;
+    std::cout<<"[22]"<<X[1][bb_max22]-30.0<<","<<Y[1][bb_max22]<<","<<Z[1][bb_max22]-395.0<<":"<<min_mani[1][bb_max22]<<std::endl;
+*/
+    /*std::cout<<"1"<<":"<<X[0][bb_max11]-30.0<<","<<Y[0][bb_max11]<<","<<Z[0][bb_max11]+395.0 - 200.0<<":"<<
+    X[1][bb_max21]-30.0<<","<<Y[1][bb_max21]<<","<<Z[1][bb_max21]+395.0 - 200.0<<"|"<<min_mani[0][bb_max11]<<":"<<min_mani[1][bb_max21]<<std::endl;
+
+    std::cout<<"2"<<":"<<X[0][bb_max12]-30.0<<","<<Y[0][bb_max12]<<","<<Z[0][bb_max12]+395.0 - 200.0<<":"<<
+    X[1][bb_max22]-30.0<<","<<Y[1][bb_max22]<<","<<Z[1][bb_max22]+395.0 - 200.0<<"|"<<min_mani[0][bb_max12]<<":"<<min_mani[1][bb_max22]<<std::endl;
+
+    std::cout<<"3"<<":"<<X[0][bb_max13]-30.0<<","<<Y[0][bb_max13]<<","<<Z[0][bb_max13]+395.0 - 200.0<<":"<<
+    X[1][bb_max23]-30.0<<","<<Y[1][bb_max23]<<","<<Z[1][bb_max23]+395.0 - 200.0<<"|"<<min_mani[0][bb_max13]<<":"<<min_mani[1][bb_max23]<<std::endl;
+
+    std::cout<<"4"<<":"<<X[0][bb_max14]-30.0<<","<<Y[0][bb_max14]<<","<<Z[0][bb_max14]+395.0 - 200.0<<":"<<
+    X[1][bb_max24]-30.0<<","<<Y[1][bb_max24]<<","<<Z[1][bb_max24]+395.0 - 200.0<<"|"<<min_mani[0][bb_max14]<<":"<<min_mani[1][bb_max24]<<std::endl;
+
+    std::cout<<"5"<<":"<<X[0][bb_max15]-30.0<<","<<Y[0][bb_max15]<<","<<Z[0][bb_max15]+395.0 - 200.0<<":"<<
+    X[1][bb_max25]-30.0<<","<<Y[1][bb_max25]<<","<<Z[1][bb_max25]+395.0 - 200.0<<"|"<<min_mani[0][bb_max15]<<":"<<min_mani[1][bb_max25]<<std::endl;*/
+
+  for (int i = 0; i < 8; i++) {
+
+    std::cout<<i+1<<":"<<pos_x[0][i]<<","<<pos_y[0][i]<<","<<pos_z[0][i]<<":"<<
+    pos_x[1][i]<<","<<pos_y[1][i]<<","<<pos_z[1][i]<<"|"<<min_mani_max[0][i]<<":"<<min_mani_max[1][i]<<std::endl;
+
+  }
+
+  ff = 0;
+
+  //  std::cout<<min_mani[0].size()<<std::endl;
+  for (int i = 0; i < 8; i++) {
+    for (int j = 0; j < 8; j++) {
+      if (sqrt(pow(pos_x[0][i] - pos_x[1][j],2) + pow(pos_y[0][i] - pos_y[1][j],2) + pow(pos_z[0][i] - pos_z[1][j],2)) >= 1000.0) {
+        if (ff == 0) {
+          pair_max = min_mani_max[0][i] + min_mani_max[1][j];
+          ff++;
+          i_max = i;
+          j_max = j;
+        }
+        else{
+          if (pair_max < min_mani_max[0][i] + min_mani_max[1][j]) {
+            pair_max = min_mani_max[0][i] + min_mani_max[1][j];
+            i_max = i;
+            j_max = j;
+          }
+        }
+      }
+    }
+  }
+
+  std::cout<<"position"<<":"<<pos_x[0][i_max]<<","<<pos_y[0][i_max]<<","<<pos_z[0][i_max]<<":"<<
+  pos_x[1][j_max]<<","<<pos_y[1][j_max]<<","<<pos_z[1][j_max]<<"|"<<min_mani_max[0][i_max]<<":"<<min_mani_max[1][j_max]<<std::endl;
+
+
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //動作
 
     for(int i = 0; i < SIZE; i+=N){
 
-      right[i] = inverse_kin(stod(data[i+S][8])-X[0][bb_max11]+30.0, -stod(data[i+S][9])+Y[0][bb_max11], -stod(data[i+S][10])+Z[0][bb_max11]-395.0,0.0,0.0,1.0,0.0,1.0,0.0,-1.0,0.0,0.0);
+      right[i] = inverse_kin(stod(data[i+S][8])-X[0][bb_max11]+30.0, -stod(data[i+S][9])+Y[0][bb_max11], -stod(data[i+S][10])+Z[0][bb_max11]-395.0,-1/2,0,sqrt(3)/2,0,1,0,-sqrt(3)/2,0,-1/2);
 
-      left[i] = inverse_kin(stod(data[i][17])-X[1][bb_max21]+30.0, -stod(data[i][18])+Y[1][bb_max21], -stod(data[i][19])+Z[1][bb_max21]-395.0,0.0,0.0,1.0,0.0,1.0,0.0,-1.0,0.0,0.0);
+      left[i] = inverse_kin(stod(data[i][17])-X[1][bb_max21]+30.0, -stod(data[i][18])+Y[1][bb_max21], -stod(data[i][19])+Z[1][bb_max21]-395.0,-1/2,0,sqrt(3)/2,0,1,0,-sqrt(3)/2,0,-1/2);
 
     }
 
