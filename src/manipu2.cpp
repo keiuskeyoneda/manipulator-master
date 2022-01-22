@@ -471,7 +471,7 @@ double manipulatability(ik ang_1[], double min){    //最小の可操作度を�
   for ( int i = 0; i < SIZE/N; i++) {
 
     if (g >= 1) {
-      continue;
+      g++;
     }
     else {
 
@@ -521,7 +521,7 @@ M1 = abs(	(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*
 
   if(std::isnan(M1)){
     //std::cout<<M1<<std::endl;
-    M1 = -1.0;
+    M1 = 0.0;
     g++;
 
   }
@@ -1000,8 +1000,12 @@ else{
   int dd=0;
   int max_dd;
   const double min_mani_max = 0.0;
-  std::cout<<max_bb_1<<","<<max_bb_2<<std::endl;
+  //std::cout<<max_bb_1<<","<<max_bb_2<<std::endl;
   std::vector<std::vector<double> > min_mani(2);
+  std::vector<double> min_mani_r;
+  std::vector<double> min_mani_l;
+  int a_r,a_l;  //配置可能位置の数
+  double threshold; //しきい値
   //double min_mani[max_bb_1][max_bb_2];//可操作度の最小
   printf("Now loading...\n" );
 
@@ -1036,14 +1040,15 @@ else{
     if (!data_file1.is_open()) {
       std::cout<<"~~~~~~~~~failed to open"<<filename1<<"~~~~~~~~~"<<std::endl;
     }
-
+a_r = 0;
 //printf("=====right=====\n");
 for (z_2_1 = z_min_1; z_2_1 <= z_max_1; z_2_1 += a) {
     for (bb_1 = 0; bb_1 < max_bb_1; bb_1++) {
-      if (min_mani[0][bb_1] > min_mani_max) {
+      if (min_mani[0][bb_1] >= min_mani_max) {
         if (Z[0][bb_1] == z_2_1) {
           //std::cout<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+195.0<<":"<<min_mani[0][bb_1]<<std::endl;
           data_file1<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+195.0<<","<<min_mani[0][bb_1]<<std::endl;
+          a_r++;
         }
       }
     }
@@ -1056,19 +1061,28 @@ for (z_2_1 = z_min_1; z_2_1 <= z_max_1; z_2_1 += a) {
   if (!data_file2.is_open()) {
     std::cout<<"~~~~~~~~~failed to open"<<filename2<<"~~~~~~~~~"<<std::endl;
   }
-
+a_l = 0;
 //printf("=====left=====\n");
 for (z_2_2 = z_min_2; z_2_2 <= z_max_2; z_2_2 += a) {
   for (bb_2 = 0; bb_2 < max_bb_2; bb_2++) {
-    if (min_mani[1][bb_2] > min_mani_max) {
+    if (min_mani[1][bb_2] >= min_mani_max) {
       if (Z[1][bb_2] == z_2_2) {
         //std::cout<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+195.0<<":"<<min_mani[1][bb_2]<<std::endl;
         data_file2<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+195.0<<","<<min_mani[1][bb_2]<<std::endl;
+        a_l++;
       }
     }
   }
 }
   data_file2.close();
+
+  min_mani_r = min_mani[0];
+  min_mani_l = min_mani[1];
+
+  std::sort(min_mani_r.rbegin(),min_mani_r.rend());
+  std::sort(min_mani_l.rbegin(),min_mani_l.rend());
+
+
 
   std::ofstream data_file12;
   std::string filename12 = "data_right22.csv";
@@ -1079,7 +1093,7 @@ for (z_2_2 = z_min_2; z_2_2 <= z_max_2; z_2_2 += a) {
 printf("=====right=====\n");
   for (z_2_1 = z_min_1; z_2_1 <= z_max_1; z_2_1 += a) {
       for (bb_1 = 0; bb_1 < max_bb_1; bb_1++) {
-        if (min_mani[0][bb_1] > 0.5e7) {
+        if (min_mani[0][bb_1] >= min_mani_r[a_r*1/100]) {
           if (Z[0][bb_1] == z_2_1) {
             std::cout<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+195.0<<":"<<min_mani[0][bb_1]<<std::endl;
             data_file12<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+195.0<<","<<min_mani[0][bb_1]<<std::endl;
@@ -1101,7 +1115,7 @@ printf("=====right=====\n");
 printf("=====left=====\n");
   for (z_2_2 = z_min_2; z_2_2 <= z_max_2; z_2_2 += a) {
     for (bb_2 = 0; bb_2 < max_bb_2; bb_2++) {
-      if (min_mani[1][bb_2] > 0.5e7) {
+      if (min_mani[1][bb_2] >= min_mani_l[a_l*1/100]) {
         if (Z[1][bb_2] == z_2_2) {
           std::cout<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+195.0<<":"<<min_mani[1][bb_2]<<std::endl;
           data_file22<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+195.0<<","<<min_mani[1][bb_2]<<std::endl;
@@ -1110,6 +1124,10 @@ printf("=====left=====\n");
     }
   }
       data_file22.close();
+
+      std::cout<<"all:"<<max_bb_1<<","<<max_bb_2<<std::endl;
+      std::cout<<"output:"<<a_r<<","<<a_l<<std::endl;
+      std::cout<<min_mani_r[a_r*1/100]<<","<<min_mani_l[a_l*1/100]<<std::endl;
 
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
