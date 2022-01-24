@@ -523,17 +523,19 @@ M1 = abs(	(a3*(sin(c+b)*d5+a4*cos(c+b)-a3*sin(b)+a1)*(cos(b)*sin(c+b)*d5-sin(b)*
     //std::cout<<M1<<std::endl;
     M1 = 0.0;
     g++;
-
+    return 0.0;
   }
 
   if (M1 < min) {
     g++;
+    return M1;
   }
 
     M.push_back(M1);
 
     }
   }
+
 
   return *std::min_element(M.begin(), M.end());
 }
@@ -715,8 +717,8 @@ ik inv;
 
 //マニピュレータの配置位置の座標を切りのいい数字にしたい
 
-std::cout<<x_min_1-30.0<<"~"<<x_max_1-30.0<<":"<<y_min_1<<"~"<<y_max_1<<":"<<z_min_1+195.0<<"~"<<z_max_1+195.0<<std::endl;
-std::cout<<x_min_2-30.0<<"~"<<x_max_2-30.0<<":"<<y_min_2<<"~"<<y_max_2<<":"<<z_min_2+195.0<<"~"<<z_max_2+195.0<<std::endl;
+std::cout<<x_min_1-30.0<<"~"<<x_max_1-30.0<<":"<<y_min_1<<"~"<<y_max_1<<":"<<z_min_1+395.0<<"~"<<z_max_1+395.0<<std::endl;
+std::cout<<x_min_2-30.0<<"~"<<x_max_2-30.0<<":"<<y_min_2<<"~"<<y_max_2<<":"<<z_min_2+395.0<<"~"<<z_max_2+395.0<<std::endl;
 
 //ちゃんと繰り上げするコードを作ったほうがいい
 if (x_min_1 > 0) {
@@ -821,7 +823,7 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
             if(stod(data[i*N][10])-z_2_1 <= 224.5){
               if( sqrt(pow(stod(data[i*N][8]) - x_2_1,2) + pow(stod(data[i*N][9]) - y_2_1,2) + pow(stod(data[i*N][10]) - z_2_1,2)) > 224.5/*309.3*/) {
                 CC = 0;
-                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
                   check++;
                 }
@@ -833,7 +835,7 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
             else if(stod(data[i*N][10])-z_2_1 < 400.0){
               if( sqrt(pow(stod(data[i*N][8]) - x_2_1,2) + pow(stod(data[i*N][9]) - y_2_1,2)) > 100.0/*224.5,309.3*/) {
                 CC = 0;
-                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
                   check++;
                 }
@@ -845,7 +847,7 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
             else {
                 CC = 0;
 
-                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
                   check++;
                 }
@@ -906,7 +908,7 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
             if(stod(data[i][19])-z_2_2 <= 224.5){
               if( sqrt(pow(stod(data[i][17]) - x_2_2,2) + pow(stod(data[i][18]) - y_2_2,2) + pow(stod(data[i][19]) - z_2_2,2)) > 309.3) {
                 CC = 0;
-                inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+                inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
                   check++;
                 }
@@ -918,7 +920,7 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
             else if (stod(data[i][19])-z_2_2 <= 400.0) {
               if( sqrt(pow(stod(data[i][17]) - x_2_2,2) + pow(stod(data[i][18]) - y_2_2,2)) > 100.0) {
                 CC = 0;
-                inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+                inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
                   check++;
                 }
@@ -928,7 +930,7 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
               }
             }
             else {
-                inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+                inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
                   check++;
                 }
@@ -1014,20 +1016,15 @@ else{
   for (bb_1 = 0; bb_1 < max_bb_1; bb_1++) {
       for(int i = 0; i < SIZE; i+=N){
         mani_1[i/N]
-          =inverse_kin(stod(data[i+S][8])-(X[0][bb_1]-30.0),-stod(data[i+S][9])+(Y[0][bb_1]),-stod(data[i+S][10])+(Z[0][bb_1]-395.0),1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+          =inverse_kin(stod(data[i+S][8])-(X[0][bb_1]-30.0),-stod(data[i+S][9])+(Y[0][bb_1]),-stod(data[i+S][10])+(Z[0][bb_1]+395.0),1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
       }
       min_mani[0].push_back(manipulatability(mani_1, min_mani_max));
       //std::cout<<manipulatability(mani_1)<<std::endl;sort
   }
 
-
-/*
-  std::cout<<"[11]"<<X[0][bb_max11]-30.0<<","<<Y[0][bb_max11]<<","<<Z[0][bb_max11]-395.0<<":"<<min_mani[0][bb_max11]<<std::endl;
-  std::cout<<"[12]"<<X[0][bb_max12]-30.0<<","<<Y[0][bb_max12]<<","<<Z[0][bb_max12]-395.0<<":"<<min_mani[0][bb_max12]<<std::endl;
-*/
     for (bb_2 = 0; bb_2 < max_bb_2; bb_2++) {
       for(int i = 0; i < SIZE; i+=N){
-        mani_2[i/N] = inverse_kin(stod(data[i+S][17])-(X[1][bb_2]-30.0), -stod(data[i+S][18])+(Y[1][bb_2]), -stod(data[i+S][19])+(Z[1][bb_2]-395.0),1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+        mani_2[i/N] = inverse_kin(stod(data[i+S][17])-(X[1][bb_2]-30.0), -stod(data[i+S][18])+(Y[1][bb_2]), -stod(data[i+S][19])+(Z[1][bb_2]+395.0),1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
       }
       min_mani[1].push_back(manipulatability(mani_2, min_mani_max));
     }
@@ -1041,16 +1038,23 @@ else{
       std::cout<<"~~~~~~~~~failed to open"<<filename1<<"~~~~~~~~~"<<std::endl;
     }
 a_r = 0;
+for (bb_1 = 0; bb_1 < max_bb_1; bb_1++) {
+  if (min_mani[0][bb_1] == 0.0) {
+    a_r++;
+  }
+}
+
 //printf("=====right=====\n");
 for (z_2_1 = z_min_1; z_2_1 <= z_max_1; z_2_1 += a) {
     for (bb_1 = 0; bb_1 < max_bb_1; bb_1++) {
-      if (min_mani[0][bb_1] >= min_mani_max) {
+      //if (min_mani[0][bb_1] >= min_mani_max) {
+
         if (Z[0][bb_1] == z_2_1) {
           //std::cout<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+195.0<<":"<<min_mani[0][bb_1]<<std::endl;
-          data_file1<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+195.0<<","<<min_mani[0][bb_1]<<std::endl;
-          a_r++;
+          data_file1<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+395.0<<","<<min_mani[0][bb_1]<<std::endl;
+          //a_r++;
         }
-      }
+      //}
     }
 }
   data_file1.close();
@@ -1062,16 +1066,22 @@ for (z_2_1 = z_min_1; z_2_1 <= z_max_1; z_2_1 += a) {
     std::cout<<"~~~~~~~~~failed to open"<<filename2<<"~~~~~~~~~"<<std::endl;
   }
 a_l = 0;
+for (bb_2 = 0; bb_2 < max_bb_2; bb_2++) {
+  if (min_mani[1][bb_2] == 0.0) {
+    a_l++;
+  }
+}
 //printf("=====left=====\n");
 for (z_2_2 = z_min_2; z_2_2 <= z_max_2; z_2_2 += a) {
   for (bb_2 = 0; bb_2 < max_bb_2; bb_2++) {
-    if (min_mani[1][bb_2] >= min_mani_max) {
+    //if (min_mani[1][bb_2] >= min_mani_max) {
+
       if (Z[1][bb_2] == z_2_2) {
         //std::cout<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+195.0<<":"<<min_mani[1][bb_2]<<std::endl;
-        data_file2<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+195.0<<","<<min_mani[1][bb_2]<<std::endl;
-        a_l++;
+        data_file2<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+395.0<<","<<min_mani[1][bb_2]<<std::endl;
+        //a_l++;
       }
-    }
+    //}
   }
 }
   data_file2.close();
@@ -1093,10 +1103,10 @@ for (z_2_2 = z_min_2; z_2_2 <= z_max_2; z_2_2 += a) {
 printf("=====right=====\n");
   for (z_2_1 = z_min_1; z_2_1 <= z_max_1; z_2_1 += a) {
       for (bb_1 = 0; bb_1 < max_bb_1; bb_1++) {
-        if (min_mani[0][bb_1] >= min_mani_r[a_r*1/100]) {
+        if (min_mani[0][bb_1] >= min_mani_r[max_bb_1*1/100]) {
           if (Z[0][bb_1] == z_2_1) {
-            std::cout<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+195.0<<":"<<min_mani[0][bb_1]<<std::endl;
-            data_file12<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+195.0<<","<<min_mani[0][bb_1]<<std::endl;
+            std::cout<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+395.0<<":"<<min_mani[0][bb_1]<<std::endl;
+            data_file12<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+395.0<<","<<min_mani[0][bb_1]<<std::endl;
           }
         }
       }
@@ -1115,10 +1125,10 @@ printf("=====right=====\n");
 printf("=====left=====\n");
   for (z_2_2 = z_min_2; z_2_2 <= z_max_2; z_2_2 += a) {
     for (bb_2 = 0; bb_2 < max_bb_2; bb_2++) {
-      if (min_mani[1][bb_2] >= min_mani_l[a_l*1/100]) {
+      if (min_mani[1][bb_2] >= min_mani_l[max_bb_2*1/100]) {
         if (Z[1][bb_2] == z_2_2) {
-          std::cout<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+195.0<<":"<<min_mani[1][bb_2]<<std::endl;
-          data_file22<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+195.0<<","<<min_mani[1][bb_2]<<std::endl;
+          std::cout<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+395.0<<":"<<min_mani[1][bb_2]<<std::endl;
+          data_file22<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+395.0<<","<<min_mani[1][bb_2]<<std::endl;
         }
       }
     }
@@ -1127,7 +1137,8 @@ printf("=====left=====\n");
 
       std::cout<<"all:"<<max_bb_1<<","<<max_bb_2<<std::endl;
       std::cout<<"output:"<<a_r<<","<<a_l<<std::endl;
-      std::cout<<min_mani_r[a_r*1/100]<<","<<min_mani_l[a_l*1/100]<<std::endl;
+      std::cout<<"100:"<<min_mani_r[a_r*1/100]<<","<<min_mani_l[a_l*1/100]<<std::endl;
+      std::cout<<"1:"<<min_mani_r[0]<<","<<min_mani_l[0]<<std::endl;
 
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1135,9 +1146,9 @@ printf("=====left=====\n");
 
     for(int i = 0; i < SIZE; i+=N){
 
-      right[i] = inverse_kin(stod(data[i+S][8])-X[0][bb_max11]+30.0, -stod(data[i+S][9])+Y[0][bb_max11], -stod(data[i+S][10])+Z[0][bb_max11]-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+      right[i] = inverse_kin(stod(data[i+S][8])-X[0][bb_max11]+30.0, -stod(data[i+S][9])+Y[0][bb_max11], -stod(data[i+S][10])+Z[0][bb_max11]+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
 
-      left[i] = inverse_kin(stod(data[i][17])-X[1][bb_max21]+30.0, -stod(data[i][18])+Y[1][bb_max21], -stod(data[i][19])+Z[1][bb_max21]-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+      left[i] = inverse_kin(stod(data[i][17])-X[1][bb_max21]+30.0, -stod(data[i][18])+Y[1][bb_max21], -stod(data[i][19])+Z[1][bb_max21]+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
 
     }
 

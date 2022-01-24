@@ -821,7 +821,7 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
             if(stod(data[i*N][10])-z_2_1 <= 224.5){
               if( sqrt(pow(stod(data[i*N][8]) - x_2_1,2) + pow(stod(data[i*N][9]) - y_2_1,2) + pow(stod(data[i*N][10]) - z_2_1,2)) > 224.5/*309.3*/) {
                 CC = 0;
-                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
                   check++;
                 }
@@ -833,7 +833,7 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
             else if(stod(data[i*N][10])-z_2_1 < 400.0){
               if( sqrt(pow(stod(data[i*N][8]) - x_2_1,2) + pow(stod(data[i*N][9]) - y_2_1,2)) > 100.0/*224.5,309.3*/) {
                 CC = 0;
-                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
                   check++;
                 }
@@ -845,7 +845,7 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
             else {
                 CC = 0;
 
-                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+                inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
                   check++;
                 }
@@ -906,7 +906,7 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
             if(stod(data[i][19])-z_2_2 <= 224.5){
               if( sqrt(pow(stod(data[i][17]) - x_2_2,2) + pow(stod(data[i][18]) - y_2_2,2) + pow(stod(data[i][19]) - z_2_2,2)) > 309.3) {
                 CC = 0;
-                inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+                inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
                   check++;
                 }
@@ -918,7 +918,7 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
             else if (stod(data[i][19])-z_2_2 <= 400.0) {
               if( sqrt(pow(stod(data[i][17]) - x_2_2,2) + pow(stod(data[i][18]) - y_2_2,2)) > 100.0) {
                 CC = 0;
-                inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+                inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
                   check++;
                 }
@@ -928,7 +928,7 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
               }
             }
             else {
-                inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2-395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+                inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
                   check++;
                 }
@@ -969,9 +969,9 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
 
     for(int i = 0; i < SIZE; i+=N){
 
-      right[i] = inverse_kin(stod(data[i+S][8])+1300.0, -stod(data[i+S][9])+200.0, -stod(data[i+S][10])+1900.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+      right[i] = inverse_kin(stod(data[i+S][8])+1200.0, -stod(data[i+S][9])+900.0, -stod(data[i+S][10])+1800.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
 
-      left[i] = inverse_kin(stod(data[i][17])+1300.0, -stod(data[i][18])+1400.0, -stod(data[i][19])+1900.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+      left[i] = inverse_kin(stod(data[i][17])+1200.0, -stod(data[i][18])+1600.0, -stod(data[i][19])+1800.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
 
     }
 
