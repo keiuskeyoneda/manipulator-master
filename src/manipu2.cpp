@@ -555,7 +555,7 @@ int main(int argc, char** argv)
  ////////////////////////////////////////////////////////////////////////////////////////////
 
 //csv2vectorの実行
-    std::string filename = "cap_s.csv";//"line_test.csv";
+    std::string filename = "capture1125.csv";//"cap_s.csv";
     std::vector<std::vector<std::string> > data = csv2vector(filename, 2);//第2引数に指定した数だけその行分読み飛ばす
     ik right[data.size()];// data.sizeはvector関数専用
     ik left[data.size()];//rightは右手,leftは左手
@@ -821,7 +821,7 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
 
           if (sqrt(pow(stod(data[i*N][8]) - x_2_1,2) + pow(stod(data[i*N][9]) - y_2_1,2) + pow(stod(data[i*N][10]) - z_2_1,2)) <= 875.5){
             if(stod(data[i*N][10])-z_2_1 <= 224.5){
-              if( sqrt(pow(stod(data[i*N][8]) - x_2_1,2) + pow(stod(data[i*N][9]) - y_2_1,2) + pow(stod(data[i*N][10]) - z_2_1,2)) > 224.5/*309.3*/) {
+              if( sqrt(pow(stod(data[i*N][8]) - x_2_1,2)/* + pow(stod(data[i*N][9]) - y_2_1,2)*/ + pow(stod(data[i*N][10]) - z_2_1,2)) > 309.3) {
                 CC = 0;
                 inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
@@ -832,7 +832,7 @@ for (x_2_1 = x_min_1; x_2_1 <= x_max_1; x_2_1 += a) {
                 check++;
               }
             }
-            else if(stod(data[i*N][10])-z_2_1 < 400.0){
+            else if(stod(data[i*N][10])-z_2_1 <= 400.0){
               if( sqrt(pow(stod(data[i*N][8]) - x_2_1,2) + pow(stod(data[i*N][9]) - y_2_1,2)) > 100.0/*224.5,309.3*/) {
                 CC = 0;
                 inv = inverse_kin(stod(data[i*N+S][8])-x_2_1+30.0, -stod(data[i*N+S][9])+y_2_1, -stod(data[i*N+S][10])+z_2_1+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
@@ -906,7 +906,7 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
         else{
           if (sqrt(pow(stod(data[i][17]) - x_2_2,2) + pow(stod(data[i][18]) - y_2_2,2) + pow(stod(data[i][19]) - z_2_2,2)) < 875.5){
             if(stod(data[i][19])-z_2_2 <= 224.5){
-              if( sqrt(pow(stod(data[i][17]) - x_2_2,2) + pow(stod(data[i][18]) - y_2_2,2) + pow(stod(data[i][19]) - z_2_2,2)) > 309.3) {
+              if( sqrt(pow(stod(data[i][17]) - x_2_2,2) /*+ pow(stod(data[i][18]) - y_2_2,2)*/ + pow(stod(data[i][19]) - z_2_2,2)) > 309.3) {
                 CC = 0;
                 inverse_kin(stod(data[i+S][17])-x_2_2+30.0, -stod(data[i+S][18])+y_2_2, -stod(data[i+S][19])+z_2_2+395.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
                 if (CC == 1) {
@@ -1048,12 +1048,13 @@ for (bb_1 = 0; bb_1 < max_bb_1; bb_1++) {
 for (z_2_1 = z_min_1; z_2_1 <= z_max_1; z_2_1 += a) {
     for (bb_1 = 0; bb_1 < max_bb_1; bb_1++) {
       //if (min_mani[0][bb_1] >= min_mani_max) {
-
+      if (min_mani[0][bb_1] != 0.0) {
         if (Z[0][bb_1] == z_2_1) {
           //std::cout<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+195.0<<":"<<min_mani[0][bb_1]<<std::endl;
           data_file1<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+395.0<<","<<min_mani[0][bb_1]<<std::endl;
           //a_r++;
         }
+      }
       //}
     }
 }
@@ -1075,12 +1076,13 @@ for (bb_2 = 0; bb_2 < max_bb_2; bb_2++) {
 for (z_2_2 = z_min_2; z_2_2 <= z_max_2; z_2_2 += a) {
   for (bb_2 = 0; bb_2 < max_bb_2; bb_2++) {
     //if (min_mani[1][bb_2] >= min_mani_max) {
-
+    if (min_mani[1][bb_2] != 0.0) {
       if (Z[1][bb_2] == z_2_2) {
         //std::cout<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+195.0<<":"<<min_mani[1][bb_2]<<std::endl;
         data_file2<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+395.0<<","<<min_mani[1][bb_2]<<std::endl;
         //a_l++;
       }
+    }
     //}
   }
 }
@@ -1103,7 +1105,7 @@ for (z_2_2 = z_min_2; z_2_2 <= z_max_2; z_2_2 += a) {
 printf("=====right=====\n");
   for (z_2_1 = z_min_1; z_2_1 <= z_max_1; z_2_1 += a) {
       for (bb_1 = 0; bb_1 < max_bb_1; bb_1++) {
-        if (min_mani[0][bb_1] >= min_mani_r[max_bb_1*1/100]) {
+        if (min_mani[0][bb_1] > min_mani_r[/*max_bb_1*1/100*/10]) {
           if (Z[0][bb_1] == z_2_1) {
             std::cout<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+395.0<<":"<<min_mani[0][bb_1]<<std::endl;
             data_file12<<X[0][bb_1]-30.0<<","<<Y[0][bb_1]<<","<<Z[0][bb_1]+395.0<<","<<min_mani[0][bb_1]<<std::endl;
@@ -1125,7 +1127,7 @@ printf("=====right=====\n");
 printf("=====left=====\n");
   for (z_2_2 = z_min_2; z_2_2 <= z_max_2; z_2_2 += a) {
     for (bb_2 = 0; bb_2 < max_bb_2; bb_2++) {
-      if (min_mani[1][bb_2] >= min_mani_l[max_bb_2*1/100]) {
+      if (min_mani[1][bb_2] > min_mani_l[/*max_bb_2*1/100*/10]) {
         if (Z[1][bb_2] == z_2_2) {
           std::cout<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+395.0<<":"<<min_mani[1][bb_2]<<std::endl;
           data_file22<<X[1][bb_2]-30.0<<","<<Y[1][bb_2]<<","<<Z[1][bb_2]+395.0<<","<<min_mani[1][bb_2]<<std::endl;
