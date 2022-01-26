@@ -553,7 +553,7 @@ int main(int argc, char** argv)
  ////////////////////////////////////////////////////////////////////////////////////////////
 
 //csv2vectorの実行
-    std::string filename = "cap_s.csv";//"line_test.csv";
+    std::string filename = "capture1125.csv";//"cap_s.csv";
     std::vector<std::vector<std::string> > data = csv2vector(filename, 2);//第2引数に指定した数だけその行分読み飛ばす
     ik right[data.size()];// data.sizeはvector関数専用
     ik left[data.size()];//rightは右手,leftは左手
@@ -969,9 +969,9 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
 
     for(int i = 0; i < SIZE; i+=N){
 
-      right[i] = inverse_kin(stod(data[i+S][8])+1200.0, -stod(data[i+S][9])+900.0, -stod(data[i+S][10])+1800.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+      right[i] = inverse_kin(stod(data[i+S][8])+1300.0, -stod(data[i+S][9])-100.0, -stod(data[i+S][10])+1900.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
 
-      left[i] = inverse_kin(stod(data[i][17])+1200.0, -stod(data[i][18])+1600.0, -stod(data[i][19])+1800.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
+      left[i] = inverse_kin(stod(data[i][17])+1300.0, -stod(data[i][18])+1600.0, -stod(data[i][19])+1900.0,1/sqrt(2),0,1/sqrt(2),0,1,0,-1/sqrt(2),0,1/sqrt(2));
 
     }
 
@@ -980,7 +980,7 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
 
   ROS_INFO("Phase 1 starts.");
 
-  ik init;
+/*  ik init;
 
   init.t[0] = 0.0;
   init.t[1] = 0.0;
@@ -1001,44 +1001,44 @@ for (x_2_2 = x_min_2; x_2_2 <= x_max_2; x_2_2 += a) {
      else {
      ROS_INFO("Phase 1 is completed.");
      }
-
+*/
      //Phase 2
 
-     ROS_INFO("Phase 2 starts.");
+     ROS_INFO("Phase 1 starts.");
 
 
-       arm.startJointTrajectory(arm.JointTrajectory(right[0], left[0], 5.0));
+       arm.startJointTrajectory(arm.JointTrajectory(right[0], left[0], 4.0));
 
         time_out = arm.joint_client_->waitForResult(ros::Duration(10.0));
 
         if (!time_out) {
-        ROS_WARN("Phase 2 is time out.");
+        ROS_WARN("Phase 1 is time out.");
         return 0;
         }
         else {
-        ROS_INFO("Phase 2 is completed.");
+        ROS_INFO("Phase 1 is completed.");
         }
 
 
 
     // Phase 3
 
-  ROS_INFO("Phase 3 starts.");
+  ROS_INFO("Phase 2 starts.");
 
 
 
     ////////////////////////////////////////////////////////////////////////////////////////////
     // arm.startJointTrajectory(arm.JointTrajectory(2));
-   arm.startJointTrajectory(arm.PositionTrajectory(right,left,0.01));
+   arm.startJointTrajectory(arm.PositionTrajectory(right,left,0.005));
 
     time_out = arm.joint_client_->waitForResult(ros::Duration(200.0));
 
     if (!time_out) {
-		ROS_WARN("Phase 3 is time out.");
+		ROS_WARN("Phase 2 is time out.");
 		return 0;
 	}
 	else {
-		ROS_INFO("Phase 3 is completed.");
+		ROS_INFO("Phase 2 is completed.");
 	}
 
 
